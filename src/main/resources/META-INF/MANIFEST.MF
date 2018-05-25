@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Premain-Class: com.niangao.intrumentation.MyAgent
+Can-Redefine-Classes: true
+Class-Path: ./lib/javax.servlet-api-3.1.0.jar ./lib/fastjson-1.2.47.ja
+ r ./lib/commons-codec-1.9.jar ./lib/httpclient-4.5.3.jar ./lib/httpco
+ re-4.4.6.jar ./lib/commons-logging-1.2.jar
+Main-Class: Main
+
