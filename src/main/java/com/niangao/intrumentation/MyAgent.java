@@ -5,6 +5,7 @@ import com.niangao.common.aspect.MyAspect;
 import com.niangao.common.aspect.MyAspectFactory;
 import com.niangao.http.utils.MyHttpUtils;
 
+import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.util.Arrays;
 
@@ -18,43 +19,47 @@ public class MyAgent {
     /**
      * 该方法是一个类作为agent类必备的
      *
-     * @param agentArgs
-     * @param inst
+     * @param agentArgs 外部传的参数字符串
+     * @param inst      一个Instrumentation对象
      */
     public static void premain(String agentArgs, Instrumentation inst) {
-        Arrays.stream(inst.getAllLoadedClasses()).forEach(aClass -> {
-            if (aClass.getName().startsWith("com.niangao")) {
-                System.out.println(aClass.getName());
-            }
-        });
         Config.init();//初始化参数
-        MyHttpUtils.getHttpClient();//初始化数据 TODO:账号或者名称配置错误的话 要提示
-        System.out.println(Config.username + "__" + Config.password);
+        MyHttpUtils.getHttpClient();//初始化数据
+        System.out.println("userInfo: " + Config.username + "__" + Config.password);
         System.out.println("project: " + Config.projectName + "  cat: " + Config.catName + "  col:  " + Config.colName);
         String level = "0";//默认打印等级
 //        setArgs(agentArgs);
         //TODO:这里可以做外部参数配置
         MyAspect aspect = getAspect(level);
-        inst.addTransformer(new ControllerTransformer(aspect));//加载类   参数为true报错
+        inst.addTransformer(getControllerTransformer(aspect));//加载类   参数为true报错
     }
 
-    //TODO;
+    //外部参数配置
     public static void setArgs(String agentArgs) {
         System.out.println(agentArgs);//打印传入的参数
-        Arrays.stream(agentArgs.split(";")).map(a -> {
-            String[] split = a.split("=");
-            return split;
+        Arrays.stream(agentArgs.split("=")).forEach(a -> {
+            String[] split = a.split("&");
+            String key = split[0];
+            String val = split[1];
         });
     }
 
+    //选择切面
     private static MyAspect getAspect(String level) {
         MyAspect aspect = null;
         switch (level) {
             case "0":
-                aspect = MyAspectFactory.getAspect("PrintUtilAspect");
+                System.out.println("aspect: " + "ControllerAspect");
+                aspect = MyAspectFactory.getAspect("ControllerAspect");
                 break;
         }
         return aspect;
+    }
+
+    //选择转换器
+    private static ClassFileTransformer getControllerTransformer(MyAspect aspect) {
+        System.out.println("ClassFileTransformer: " + "ControllerTransformer");
+        return new ControllerTransformer(aspect);
     }
 
 }

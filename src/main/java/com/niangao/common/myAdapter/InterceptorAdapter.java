@@ -39,26 +39,31 @@ public class InterceptorAdapter extends ClassVisitor implements Opcodes {
             //如果继承了WebMvcConfigurerAdapter ,就一定是过滤器配置类
             System.out.println("visit==================");
             isInterceptorConfig = true;
-            MethodVisitor mv = this.visitMethod(ACC_PUBLIC, Config.weavingInterceptorName, "()L" + Config.weavingPackageName + "interceptor/UploadInterceptor;", null, null);
-            {
-                AnnotationVisitor av0 = mv.visitAnnotation("Lorg/springframework/context/annotation/Bean;", true);
-                av0.visitEnd();
-            }
-            mv.visitCode();
-            mv.visitTypeInsn(NEW, Config.weavingPackageName + "interceptor/UploadInterceptor");
-            mv.visitInsn(DUP);
-            mv.visitMethodInsn(INVOKESPECIAL, Config.weavingPackageName + "interceptor/UploadInterceptor", "<init>", "()V", false);
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(2, 1);
-            mv.visitEnd();
-            System.out.println("已经生成bean方法................................................");
+//            genBeanMethod();
         } else {
             isInterceptorConfig = false;
         }
+        isInterceptorConfig = true;
         owner = name;//记录owner
         isInterface = (access & Opcodes.ACC_INTERFACE) != 0;//记录是否为接口
         System.out.println("=============================" + owner + "=============================");
+    }
 
+    //生成一个bean方法,将我们自己的拦截器声明为一个bean
+    public void genBeanMethod() {
+        MethodVisitor mv = this.visitMethod(ACC_PUBLIC, Config.weavingInterceptorName, "()L" + Config.weavingPackageName + "interceptor/UploadInterceptor;", null, null);
+        {
+            AnnotationVisitor av0 = mv.visitAnnotation("Lorg/springframework/context/annotation/Bean;", true);
+            av0.visitEnd();
+        }
+        mv.visitCode();
+        mv.visitTypeInsn(NEW, Config.weavingPackageName + "interceptor/UploadInterceptor");
+        mv.visitInsn(DUP);
+        mv.visitMethodInsn(INVOKESPECIAL, Config.weavingPackageName + "interceptor/UploadInterceptor", "<init>", "()V", false);
+        mv.visitInsn(ARETURN);
+        mv.visitMaxs(2, 1);
+        mv.visitEnd();
+        System.out.println("已经生成bean方法................................................");
     }
 
     @Override
@@ -80,18 +85,16 @@ public class InterceptorAdapter extends ClassVisitor implements Opcodes {
     public AnnotationVisitor visitAnnotation(String s, boolean b) {
         System.out.println("visitAnnotation " + s);
         AnnotationVisitor av = cv.visitAnnotation(s, b);
-        if (isInterceptorConfig && s.equals("Lorg/springframework/context/annotation/Configuration;")) {
-        }
         return av;
     }
 
     @Override
     public void visitEnd() {
         if (isInterceptorConfig && !isAddInterceptorsExit) {
-            //如果是配置类,但是却没有写这个方法
+            //如果是配置类,但是却没有写这个方法 生成此方法
 //            TODO:
         }
         System.out.println("=============================" + owner + "=============================");
-        cv.visitEnd();
+
     }
 }

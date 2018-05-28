@@ -10,8 +10,8 @@ public class MyAspectFactory {
         if (aspect == null) {
             return null;
         }
-        if (aspect.equalsIgnoreCase("PrintUtilAspect")) {
-            return PrintUtilAspect.getInstance();
+        if (aspect.equalsIgnoreCase("ControllerAspect")) {
+            return ControllerAspect.getInstance();
         }
         return null;
     }

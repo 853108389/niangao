@@ -33,11 +33,6 @@ public class InterceptorMethodAdapter extends AdviceAdapter {
         this.aspect = aspect;
     }
 
-//    @Override
-//    public void visitInsn(int i) {
-//        System.out.println("visitInsn " + i);
-//        mv.visitInsn(i);
-//    }
 
     @Override
     public void visitMethodInsn(int i, String s, String name, String desc, boolean b) {
@@ -48,7 +43,7 @@ public class InterceptorMethodAdapter extends AdviceAdapter {
 
     @Override
     protected void onMethodEnter() {
-        //添加拦截器
+        //将我们的bean注册到拦截器栈中
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, owner, Config.weavingInterceptorName, "()L" + Config.weavingPackageName + "UploadInterceptor;", false);

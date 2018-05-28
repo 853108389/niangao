@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Author NianGao
@@ -27,7 +28,7 @@ public class TestCase {
     private String path;
     private String project_id;
     private List<FormParams> req_body_form;
-    private List<HeaderParams> req_headers;
+    private Set<HeaderParams> req_headers;
     private List<?> req_params;//不知道
     private List<QueryParams> req_query;
     private String res_body_type;
@@ -58,8 +59,10 @@ public class TestCase {
             return false;
         if (req_headers != null ? !req_headers.toString().equals(testCase.req_headers.toString()) : testCase.req_headers != null)
             return false;
-        if (req_params != null ? !req_params.toString().equals(testCase.req_params.toString()) : testCase.req_params != null) return false;
-        if (req_query != null ? !req_query.toString().equals(testCase.req_query.toString()) : testCase.req_query != null) return false;
+        if (req_params != null ? !req_params.toString().equals(testCase.req_params.toString()) : testCase.req_params != null)
+            return false;
+        if (req_query != null ? !req_query.toString().equals(testCase.req_query.toString()) : testCase.req_query != null)
+            return false;
         if (req_body_type != null ? !req_body_type.equals(testCase.req_body_type) : testCase.req_body_type != null)
             return false;
         return req_body_other != null ? req_body_other.equals(testCase.req_body_other) : testCase.req_body_other == null;

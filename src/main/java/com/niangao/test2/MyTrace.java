@@ -22,13 +22,15 @@ public class MyTrace extends HandlerInterceptorAdapter {
 //        list.add(null);
 //    }
 
-    public static String inputValueFromReq() {
-        Object obj = null;
-        String aaa = "aaa";
-        System.out.println(obj);
-        obj = aaa;
-        return aaa;
-    }
+//    public static void inputValueFromReq() {
+//        try {
+//            Class<?> aClass = ClassLoader.getSystemClassLoader().loadClass("com.niangao.common.weaving.interceptor.UploadInterceptor2.class");
+//            InputStream systemResourceAsStream = ClassLoader.getSystemResourceAsStream("D:\\workplace\\test\\src\\main\\java\\com\\niangao\\common\\weaving\\interceptor\\UploadInterceptor2.class");
+//            System.out.println(aClass);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Bean
     public TestInterceptorAdapter getTokenHandler() {
@@ -43,7 +45,6 @@ public class MyTrace extends HandlerInterceptorAdapter {
     public static Object inputValueFromReq2() {
         return String.valueOf(123);
     }
-
 //    public void test3() {
 //
 //        String methodName = "aaaaaaaaaaa";

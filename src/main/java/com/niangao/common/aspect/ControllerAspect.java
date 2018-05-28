@@ -17,14 +17,14 @@ import java.util.*;
  * @description
  */
 @SuppressWarnings("all")
-public class PrintUtilAspect extends MyAspect {
+public class ControllerAspect extends MyAspect {
 
-    private PrintUtilAspect() {
+    private ControllerAspect() {
 
     }
 
     private static class InnerClass {
-        private static MyAspect m = new PrintUtilAspect();
+        private static MyAspect m = new ControllerAspect();
     }
 
     public static MyAspect getInstance() {
@@ -135,7 +135,6 @@ public class PrintUtilAspect extends MyAspect {
                 mv.visitMethodInsn(INVOKESPECIAL, "java/util/LinkedList", "<init>", "()V", false);
                 mv.visitVarInsn(ASTORE, pos3);
                 for (EnumEntry enumEntry : annEntry.getEnumEntrylist()) {
-                    //创建一个enumEntry TODO:Object用String替换了
                     int pos4 = mv.newLocal(Type.getType(EnumEntry.class));
                     mv.visitTypeInsn(NEW, Config.weavingPackageName + "beans/EnumEntry");
                     mv.visitInsn(DUP);
@@ -545,6 +544,7 @@ public class PrintUtilAspect extends MyAspect {
     public void after(int opcode) {
         if (mv != null) {
             if (opcode == ATHROW) {
+                //TODO: 对于抛异常的情况,或许也应该处理
                 //最后是throw,  不做处理
             } else {
                 if (opcode == RETURN) {

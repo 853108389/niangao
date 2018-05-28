@@ -34,11 +34,23 @@ public class Config {
     public static String projectName;//项目名
     public static String catName;//分类名
     public static String colName;//测试用例分类名
-
+    public static HashMap<String, String> defaultHeaders = new HashMap<>();//默认携带的请求头
+    //=========================开发时配置
+    public static String traceTxtPos;//类的asm指令生成位置
+    public static String agentGenClassPos;//代理模式启动下,生成的增强后的类根目录
+    public static String mainBaseScanPack;//main方法启动测试asm生成类时,扫描的包路径
+    public static String mainGenClassPos;//main方法启动测试asm生成类时,生成的类目录
+    public static ResourceBundle resourceBundle = ResourceBundle.getBundle("config.config");
 
     public static void init() {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("config.config");
-        //===========扫描配置
+        scanConf();//扫描配置
+        weavingConf();  //植入配置
+        plantformConf();   //平台配置
+        devConf();  //开发时配置
+    }
+
+    //扫描配置
+    public static void scanConf() {
         IClassAnnName = Arrays.stream(resourceBundle.getString("IClassAnnName").split(";"))
                 .map(IClassAnnDes -> descMap.get(IClassAnnDes.trim()))
                 .collect(Collectors.toList());
@@ -57,25 +69,42 @@ public class Config {
         }
         EPackageBaseName = Arrays.stream(resourceBundle.getString("EPackageBaseName").replace(".", "/").split(";"))
                 .collect(Collectors.toList());
-        //==========植入配置
+
+    }
+
+    //植入配置
+    public static void weavingConf() {
         weavingPackageName = resourceBundle.getString("weavingPackageName").replace(".", "/").split(";")[0] + "/";
         weavingInterceptorName = resourceBundle.getString("weavingInterceptorName").split(";")[0];
-        //==========平台配置
+    }
+
+    //平台配置
+    public static void plantformConf() {
         username = resourceBundle.getString("username");
         password = resourceBundle.getString("password");
         projectName = resourceBundle.getString("projectName");
         catName = resourceBundle.getString("catName");
         colName = resourceBundle.getString("colName");
+        Arrays.stream(resourceBundle.getString("headers").split("&")).forEach(entry -> {
+            String[] split = entry.split("=");
+            defaultHeaders.put(split[0], split[1]);
+        });
     }
 
+    //开发时配置
+    public static void devConf() {
+        traceTxtPos = resourceBundle.getString("traceTxtPos");
+        agentGenClassPos = resourceBundle.getString("agentGenClassPos").trim();
+        mainBaseScanPack = resourceBundle.getString("mainBaseScanPack").trim();
+    }
+
+    //是否扫描该类
     public static boolean isScan(String className) {
-//        System.out.println("------------------" + className);
         if (className == null) {
-//            System.out.println("------" + "类名为null");
             return false;
         }
         if (className.contains("$")) {
-//            System.out.println("------" + "spring代理: " + className);
+            //包含内部类和大量spring的代理类
             return false;
         }
         if (Config.EPackageBaseName.stream().anyMatch(a -> className.startsWith(a))) {

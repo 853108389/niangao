@@ -19,4 +19,8 @@ public class UploadInterceptor extends HandlerInterceptorAdapter {
         System.out.println("r==========================我的interceptor==========================");
         return true;
     }
+
+    public void test() {
+        System.out.println("我是test");
+    }
 }

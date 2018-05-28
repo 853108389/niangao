@@ -52,7 +52,7 @@ public class WeavingUtils {
                 for (String method : methodList) {
                     String status = chooseUploadType(method, httpServletRequest, params, requestBody);
                     System.out.println("status:" + status);
-                    List<HeaderParams> requestHeader = getRequestHeader(headers, httpServletRequest);
+                    Set<HeaderParams> requestHeader = getRequestHeader(headers, httpServletRequest);
                     String title = "(" + method + ")" + path;
                     switch (status) {
                         case "NONE":
@@ -77,7 +77,7 @@ public class WeavingUtils {
                             upload(edit_post_json, title, path, method, requestHeader, returnObj);
                             break;
                         case "POST_FILE":
-                            //TODO:
+//                            TODO:处理文件的情况 @Multipart注解情况适配
                             break;
                         default:
                             System.out.println("----未知的错误");
@@ -117,7 +117,7 @@ public class WeavingUtils {
                         break;
                     case "multipart/form-data":
                         status = "POST_FILE";
-                        //post_file  TODO:这里好像有个注解
+                        //post_file  TODO:处理文件的情况 @Multipart注解情况适配
                         break;
                 }
             } else {
@@ -132,7 +132,7 @@ public class WeavingUtils {
                     //post_form
                 } else {
                     status = "POST_JSON"; //默认json把
-//                    既没有 requestParam 也没有requestBody  TODO: Model ???
+//                    既没有 requestParam 也没有requestBody  TODO: 使用@Model或者@ModelAndView 接受参数了
                 }
             }
         }
@@ -150,7 +150,6 @@ public class WeavingUtils {
             }
         } else {
             if (request != null) {
-                //TODO:
                 Map<String, String[]> parameterMap = request.getParameterMap();
                 for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
                     QueryParams queryParams = new QueryParams();
@@ -173,7 +172,6 @@ public class WeavingUtils {
             }
         } else {
             if (request != null) {
-                //TODO:
                 Map<String, String[]> parameterMap = request.getParameterMap();
                 for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
                     FormParams formParams = new FormParams();
@@ -190,17 +188,13 @@ public class WeavingUtils {
         String s = "{}";
         if (requestBody != null) {
             s = JSONObject.toJSONString(requestBody);
-        } else {
-            if (request != null) {
-                //TODO:
-            }
         }
         return s;
     }
 
     //获得RequestHeader对象()
-    public static List<HeaderParams> getRequestHeader(HashMap<String, Object> headers, HttpServletRequest request) {
-        List<HeaderParams> list = new LinkedList<>();
+    public static Set<HeaderParams> getRequestHeader(HashMap<String, Object> headers, HttpServletRequest request) {
+        Set<HeaderParams> list = new HashSet<>();
         if (request != null) {
             //从request里没有值,从headers里拿
             Enumeration e = request.getHeaderNames();
@@ -228,7 +222,7 @@ public class WeavingUtils {
 
     //进行上传
     public static void upload(Edit edit, String title, String path, String method,
-                              List<HeaderParams> requestHeader, Object returnObj) {
+                              Set<HeaderParams> requestHeader, Object returnObj) {
         System.out.println("------------>upload<------------");
         edit.setTitle(title.length() > 100 ? title.substring(0, 100) : title);//方法名字
         edit.setPath(path);//请求路径
@@ -292,7 +286,7 @@ public class WeavingUtils {
                 Map<String, String[]> parameterMap = request.getParameterMap();
                 QueryParams queryParams = new QueryParams();
                 for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-                    String val = entry.getValue()[0];//TODO;
+                    String val = entry.getValue()[0];
                     queryParams.setName(entry.getKey());
                     list.add(queryParams);
                 }

@@ -1,18 +1,15 @@
 package com.niangao.common.myAdapter;
 
-import com.niangao.common.aspect.MyAspect;
-import jdk.internal.org.objectweb.asm.AnnotationVisitor;
-import jdk.internal.org.objectweb.asm.ClassVisitor;
-import jdk.internal.org.objectweb.asm.MethodVisitor;
-import jdk.internal.org.objectweb.asm.Opcodes;
 import com.niangao.common.Config;
+import com.niangao.common.aspect.MyAspect;
+import jdk.internal.org.objectweb.asm.*;
 
 /**
  * @Author NianGao
  * @Date 2018/5/8.
  * @description 类访问器适配器, 基于委托的形式 使用ASM5
  */
-public class ControllerAdapter extends ClassVisitor {
+public class ControllerAdapter extends ClassVisitor implements Opcodes {
     private String owner; //记住类名
     private boolean isInterface; //判断改类是否为接口,如果是就不进行增强
     private boolean isController = false;//判断是否是Controller
@@ -43,7 +40,7 @@ public class ControllerAdapter extends ClassVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String s, boolean b) {
-        if (isController || Config.IClassAnnName.stream().anyMatch(key -> s.equals(key))) {
+        if (isController || Config.IClassAnnName.stream().anyMatch(s::equals)) {
             //如果是Controller
             System.out.println("Controller: " + owner);
             isController = true;
@@ -95,4 +92,5 @@ public class ControllerAdapter extends ClassVisitor {
         System.out.println("=============================" + owner + "=============================");
         cv.visitEnd();
     }
+
 }

@@ -1,5 +1,6 @@
 package com.niangao.common.utils;
 
+import com.niangao.common.Config;
 import com.niangao.common.aspect.MyAspect;
 import com.niangao.common.myAdapter.ControllerAdapter;
 import com.niangao.common.myAdapter.InterceptorAdapter;
@@ -36,14 +37,14 @@ public class ControllerScanner {
      * @param isParallel 是否采用并行处理
      */
     public static void genEnhanceClasses(String pack, MyAspect myAspect, String basePath, boolean isbuildAll, boolean isParallel) {
-        Set<Class<?>> c = ClassTools.getClasses(pack);
+        Set<Class<?>> c = ClassTools.getClasses(pack)/*.stream().filter(a -> !a.getName().contains("$")).collect(Collectors.toSet())*/;
         if (isParallel) {
-//            TODO:
-//            c.stream().parallel().forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));// 如果使用并行处理
+//            TODO:拦截器的增强
             c.stream().parallel().forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));// 如果使用并行处理
+//            c.stream().parallel().forEach(clazz -> ControllerScanner.enhanceInterceptor(clazz, myAspect, basePath, isbuildAll));// 如果使用并行处理
         } else {
-//            c.stream().forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));
-            c.stream().forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));
+            c.forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));
+//            c.stream().forEach(clazz -> ControllerScanner.enhanceInterceptor(clazz, myAspect, basePath, isbuildAll));
         }
     }
 
@@ -103,12 +104,11 @@ public class ControllerScanner {
      */
     public static byte[] classScanner(String className, MyAspect myAspect, String basePath, boolean isbuildAll) throws IOException {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        boolean isWrite = false;
         System.out.println("ClassReader " + className);
         ClassReader classReader = new ClassReader(className);//分析类
         ControllerAdapter cv = new ControllerAdapter(classWriter, myAspect);//cv将所有事件转发给cw
         classReader.accept(cv, ClassReader.EXPAND_FRAMES);
-        isWrite = cv.isController();
+        boolean isWrite = cv.isController();
         byte car[] = classWriter.toByteArray();
         if (isWrite || isbuildAll) {
             if (!("".equals(basePath) || basePath == null)) {
@@ -122,23 +122,22 @@ public class ControllerScanner {
      * 适配   通过类名加载不到类
      *
      * @param in         需要增强的类的流
-     * @param myAspect
-     * @param basePath
-     * @param isbuildAll
+     * @param myAspect   切面
+     * @param basePath   基础路径
+     * @param isbuildAll 是否生成所有类 为false
      * @param className  需要增强的类名
-     * @return
+     * @return 增强后的字节数组
      * @throws IOException
      */
     public static byte[] classScanner(InputStream in, MyAspect myAspect, String basePath, boolean isbuildAll, String className) throws IOException {
-        boolean isWrite = false;
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         ClassReader classReader = new ClassReader(in);//分析类
-//TODO:
+//TODO:拦截器的增强
         ControllerAdapter cv = new ControllerAdapter(classWriter, myAspect);//cv将所有事件转发给cw
 //        InterceptorAdapter cv = new InterceptorAdapter(classWriter);
         classReader.accept(cv, ClassReader.EXPAND_FRAMES);
 //        isWrite = cv.isInterceptorConfig();
-        isWrite = cv.isController();
+        boolean isWrite = cv.isController();
         byte car[] = classWriter.toByteArray();
         if (isWrite || isbuildAll) {
             if (!("".equals(basePath) || basePath == null)) {
@@ -195,7 +194,7 @@ public class ControllerScanner {
     }
 
     public static void getTraceInfo(Class<?> clazz) {
-        getTraceInfo(clazz, "D://trace.txt");
+        getTraceInfo(clazz, Config.traceTxtPos);//默认使用配置文件里的位置
     }
 //======================================================================================================================
 //反射
@@ -212,7 +211,7 @@ public class ControllerScanner {
         if (isParallel) {
             c.stream().parallel().forEach(ControllerScanner::getInfo);  //如果使用并行处理
         } else {
-            c.stream().forEach(ControllerScanner::getInfo);
+            c.forEach(ControllerScanner::getInfo);
         }
     }
 
