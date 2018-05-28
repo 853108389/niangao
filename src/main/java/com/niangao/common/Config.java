@@ -34,6 +34,7 @@ public class Config {
     public static String projectName;//项目名
     public static String catName;//分类名
     public static String colName;//测试用例分类名
+    public static String groupName;//分组名
     public static HashMap<String, String> defaultHeaders = new HashMap<>();//默认携带的请求头
     //=========================开发时配置
     public static String traceTxtPos;//类的asm指令生成位置
@@ -85,6 +86,7 @@ public class Config {
         projectName = resourceBundle.getString("projectName");
         catName = resourceBundle.getString("catName");
         colName = resourceBundle.getString("colName");
+        groupName = resourceBundle.getString("groupName");
         Arrays.stream(resourceBundle.getString("headers").split("&")).forEach(entry -> {
             String[] split = entry.split("=");
             defaultHeaders.put(split[0], split[1]);
@@ -96,6 +98,7 @@ public class Config {
         traceTxtPos = resourceBundle.getString("traceTxtPos");
         agentGenClassPos = resourceBundle.getString("agentGenClassPos").trim();
         mainBaseScanPack = resourceBundle.getString("mainBaseScanPack").trim();
+        mainGenClassPos = resourceBundle.getString("mainGenClassPos").trim();
     }
 
     //是否扫描该类

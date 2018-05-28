@@ -40,13 +40,11 @@ public class ControllerClassAnoAdapter extends AnnotationVisitor {
 
     @Override
     public AnnotationVisitor visitAnnotation(String s, String s1) {
-        System.out.println("visitAnnotation");
         return new ControllerClassAnoAdapter(av.visitAnnotation(s, s1), aspect);
     }
 
     @Override
     public AnnotationVisitor visitArray(String s) {
-        System.out.println("visitArray" + s);
         return new ControllerClassAnoAdapter(av.visitArray(s), aspect);
     }
 

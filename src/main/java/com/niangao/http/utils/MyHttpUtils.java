@@ -35,7 +35,7 @@ import java.util.*;
  */
 @SuppressWarnings("all")
 public class MyHttpUtils {
-    private static String group_id = "20";//分组id TODO:写死了
+    private static String group_id;//分组id
     private static String project_id;//当前的项目id
     private static String catid;//当前的分类目录
     private static String col_id;//测试用例里面的id
@@ -43,10 +43,11 @@ public class MyHttpUtils {
     private static RequestConfig config = RequestConfig.custom().setConnectTimeout(6000).setSocketTimeout(6000)
             .setCookieSpec(CookieSpecs.STANDARD).build(); // 设置超时及cookie策略 注:不设置就无法获得到cookie
     //================各种缓存
-    private static Map<String, String> titles = new HashMap<>();
-    private static Map<String, String> cats = new HashMap<>();
-    private static Map<String, String> projects = new HashMap<>();
-    private static Map<String, String> cols = new HashMap<>();//接口
+    private static Map<String, String> groups = new HashMap<>();//分组目录
+    private static Map<String, String> projects = new HashMap<>();//项目
+    private static Map<String, String> cats = new HashMap<>();//接口目录
+    private static Map<String, String> titles = new HashMap<>();//接口
+    private static Map<String, String> cols = new HashMap<>();//测试用例目录
     private static List<TestCase> testCases = new ArrayList<>();//测试用例
     //cookies信息
     private static HttpClientContext context = HttpClientContext.create();
@@ -103,16 +104,14 @@ public class MyHttpUtils {
         try {
             CloseableHttpClient httpClient = getHttpClient();
             List<NameValuePair> list = getNameValuePair(map);
-            if (list.size() > 0) {
-                //执行方法
-                url += "?" + EntityUtils.toString(new UrlEncodedFormEntity(list), charset);
-                System.out.println(url);
-                HttpGet httpGet = new HttpGet(url);
-                httpGet.setConfig(config);
-                CloseableHttpResponse response = httpClient.execute(httpGet);
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    return JSON.parseObject(EntityUtils.toString(response.getEntity()));
-                }
+            //执行方法
+            url += "?" + EntityUtils.toString(new UrlEncodedFormEntity(list), charset);
+            System.out.println(url);
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.setConfig(config);
+            CloseableHttpResponse response = httpClient.execute(httpGet);
+            if (response.getStatusLine().getStatusCode() == 200) {
+                return JSON.parseObject(EntityUtils.toString(response.getEntity()));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -175,11 +174,33 @@ public class MyHttpUtils {
 
     //用于处理登录后的一系列缓存工作
     public static void afterLogin() {
+        updateGroups();
         updateProject();
         updateCols();
         updateCat();
         updateInterfaces();
         updateTestCases();
+    }
+
+    //获取所有的分组目录
+    public static void updateGroups() {
+        JSONObject allGroups = findAllGroups();
+        JSONArray array = allGroups.getJSONArray("data");
+        if (array.size() > 0) {
+            for (int i = 0; i < array.size(); i++) {
+                // 遍历 jsonarray 数组，把每一个对象转成 json 对象
+                JSONObject obj = array.getJSONObject(i);
+                String title = obj.get("group_name").toString();
+                if (!groups.containsKey(title)) {
+                    groups.put(title, obj.getString("_id").toString());//名字,id
+                }
+            }
+        }
+        groups.forEach((key, value) -> {
+            if (key.equals(Config.groupName)) {
+                MyHttpUtils.group_id = value;
+            }
+        });
     }
 
     //获取所有的接口名称,目的是判断是否接口已经添加过,如果添加过,跳过接口添加,直接进入测试用例提交
@@ -356,6 +377,11 @@ public class MyHttpUtils {
         return doGet(Api.findAllCase, "project_id", project_id);
     }
 
+    //查看所有的分组
+    public static JSONObject findAllGroups() {
+        return doGet(Api.findAllGroups);
+    }
+
     //===============================================================业务方法
     //判断接口是否已经存在
     private static Optional<String> isInterFaceExsit(AddInterface addInterface) {
@@ -377,12 +403,12 @@ public class MyHttpUtils {
             String res = optional.orElseGet(() -> {
                 //如果不存在
                 JSONObject addInterFaceRes = addInterFace(addInterface);
-                System.out.println(addInterFaceRes);
+//                System.out.println(addInterFaceRes);
                 if (addInterFaceRes.containsKey("data")) {
                     String id = addInterFaceRes.getJSONObject("data").getString("_id");//添加接口并获取id
                     edit.setId(id);
                     JSONObject jsonObject = editInterFace(edit);//编辑接口
-                    System.out.println("edit " + jsonObject);
+//                    System.out.println("edit " + jsonObject);
                     updateInterfaces();//更新接口信息
                     return id;
                 } else {
@@ -391,9 +417,9 @@ public class MyHttpUtils {
                     return "";
                 }
             });//返回接口id;
-            System.out.println("testCases " + testCases);
+//            System.out.println("testCases " + testCases);
             TestCase o = new TestCase(edit);
-            System.out.println("o " + o);
+//            System.out.println("o " + o);
             if (testCases.contains(o)) {
                 //该测试用例重复
                 System.out.println("重复添加--------------------");

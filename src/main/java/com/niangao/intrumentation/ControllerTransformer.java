@@ -44,9 +44,9 @@ public class ControllerTransformer implements ClassFileTransformer {
                 return bytes;
             }
         } catch (IOException e) {
-            System.out.println("转换异常1...  " + e.getMessage());
+            System.out.println("IO异常...  " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("转换异常....  " + e.getMessage());
+            System.out.println("转换异常,不用理它....  ");
             e.printStackTrace();
         }
         return classfileBuffer;

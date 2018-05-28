@@ -1,19 +1,9 @@
-import com.alibaba.fastjson.JSONArray;
 import com.niangao.common.Config;
 import com.niangao.common.aspect.ControllerAspect;
 import com.niangao.common.utils.ControllerScanner;
-import com.niangao.http.bean.HeaderParams;
-import com.niangao.http.bean.TestCase;
 import com.niangao.http.utils.MyHttpUtils;
-import com.niangao.http.vo.Edit_Get;
-import com.niangao.test2.MyController;
 import com.niangao.test2.MyTrace;
 import jdk.internal.org.objectweb.asm.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @Author NianGao
@@ -24,29 +14,13 @@ public class Main implements Opcodes {
 
     public static void main(String[] args) {
         Config.init();
-        System.out.println(Config.defaultHeaders);
-        Set<HeaderParams> set = new HashSet<>();
-        HeaderParams headerParams1 = new HeaderParams("key1", "bccccc");
-        set.add(headerParams1);
-//        System.out.println(set);
-        Edit_Get edit_get = new Edit_Get();
-        edit_get.setReq_headers(set);
-        System.out.println(edit_get.getReq_headers());
-//        System.out.println(edit_get.getReq_headers());
-//        System.out.println(Config.IPackageName);
-//        System.out.println(Config.IClassAnnName);
-//        System.out.println(Config.IMethodAnnName);
-//        System.out.println(Config.EPackageBaseName);
-//        testHttpUtils();
-//        testdoMock();
+        testHttpUtils();
 //        testAgent();//测试代理 TODO:重复添加问题,可能需要一个标志标量
-        testAsm();//测试asm
-        testTrace();//测试trace
+//        testAsm();//测试asm
+//        testTrace();//测试trace
 //        dump();
 //        testUtils();
 //        testGetInfo();
-//        String str = "/{roomUuid}/endpoints";
-//        MyTrace.inputValueFromReq();
     }
 
     //匿名
@@ -91,25 +65,9 @@ public class Main implements Opcodes {
         return cw.toByteArray();
     }
 
-    //    public static void testdoMock() {
-//        HeaderParams headerParams = new HeaderParams("aaaa", "bbbbb");
-//        WeavingUtils.doMock("methodName", Arrays.asList("POST"),
-//                Arrays.asList("/roomcenter/ceshi"), null,
-//                headerParams, null, new HashMap<String, Object>() {{
-//                    put("testHeader", "testValue");
-//                }});
-//    }
+    //测试http请求
     public static void testHttpUtils() {
         MyHttpUtils.getHttpClient();
-        JSONArray array = MyHttpUtils.findAllTestCase(MyHttpUtils.getCol_id()).getJSONArray("data");//获取所有用例
-        List<TestCase> list = new ArrayList<>();
-        if (array.size() > 0) {
-            for (int i = 0; i < array.size(); i++) {
-                // 遍历 jsonarray 数组，把每一个对象转成 json 对象
-                list.add(array.getObject(i, TestCase.class));
-            }
-        }
-        System.out.println(list);
 //        JSONObject allInterFace = MyHttpUtils.findAllInterFace("79");
 //        System.out.println(allInterFace);
         //==
@@ -148,32 +106,13 @@ public class Main implements Opcodes {
 
     }
 
-
-    public static void testResult() {
-        System.out.println("");
-        System.out.println("====================result====================");
-        MyController myController = new MyController();
-        myController.testMethod("-------- com.niangao.test---------");
-    }
-
+    //生成traceInfo
     public static void testTrace() {
         ControllerScanner.getTraceInfo(MyTrace.class);
         System.out.println("Trace完成");
     }
 
-    public static void testAgent() {
-        System.out.println(111111);
-        MyController myController = new MyController();
-        myController.testMethod("-------- com.niangao.test---------");
-    }
-
-    public static void testGetInfo() {
-//        Set<Class<?>> a = ClassTools.getClasses("com/seewo/roomcenter");
-//        ControllerScanner.getInfo(a, false);
-//        GetInfo.getInfo(com.niangao.common.utils);
-//        GetInfo.getInfo(Info.class);
-    }
-
+    //测试字节码增强
     public static void testAsm() {
         ControllerScanner.genEnhanceClasses(Config.mainBaseScanPack, ControllerAspect.getInstance(), Config.mainGenClassPos);
     }

@@ -26,4 +26,6 @@ public class Api {
     public static final String findAllProject = "http://sapi.gz.cvte.cn/api/project/list";
     //查看分组内所有的测试用例目录?project_id=69
     public static final String findAllCase = "http://sapi.gz.cvte.cn/api/col/list";
+    //查看所有的分组
+    public static final String findAllGroups = "http://sapi.gz.cvte.cn/api/group/list";
 }
