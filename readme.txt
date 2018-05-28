@@ -64,5 +64,5 @@
     |-lib
     |-jar
 4.命令行代理启动
-  格式如 java -javaagent:D:\workplace\test\out\artifacts\test\test.jar=Hello -jar D:\seewo-roomcenter.jar
+  格式如 java -javaagent:D:\workplace\test\out\artifacts\seewo_datamock\seewo-datamock.jar=Hello -jar D:\seewo-roomcenter.jar
   java -javaagent:${此jar包的全路径}=${自定义参数} -jar ${被代理启动jar的全路径}

@@ -1,8 +1,8 @@
-import com.niangao.common.Config;
-import com.niangao.common.aspect.ControllerAspect;
-import com.niangao.common.utils.ControllerScanner;
-import com.niangao.http.utils.MyHttpUtils;
-import com.niangao.test2.MyTrace;
+import com.seewo.datamock.common.Config;
+import com.seewo.datamock.common.aspect.ControllerAspect;
+import com.seewo.datamock.common.utils.ControllerScanner;
+import com.seewo.datamock.http.utils.MyHttpUtils;
+import com.seewo.datamock.test2.MyTrace;
 import jdk.internal.org.objectweb.asm.*;
 
 /**
@@ -34,14 +34,14 @@ public class Main implements Opcodes {
 //        cw.visit(52, ACC_SUPER, "D://test/InterceptorConfig$1.class", null, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", null);
 //        cw.visitOuterClass();
         //=============
-        cw.visit(52, ACC_PUBLIC + ACC_SUPER, "com/niangao/test/InterceptorConfig", null, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", null);
+        cw.visit(52, ACC_PUBLIC + ACC_SUPER, "com/seewo/datamock/test/InterceptorConfig", null, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", null);
 
         cw.visitSource("InterceptorConfig.java", null);
         {
             av0 = cw.visitAnnotation("Lorg/springframework/context/annotation/Configuration;", true);
             av0.visitEnd();
         }
-        cw.visitInnerClass("com/niangao/test/InterceptorConfig$1.class", "com/niangao/test/InterceptorConfig", null, 0);
+        cw.visitInnerClass("com/seewo/datamock/test/InterceptorConfig$1.class", "com/seewo/datamock/test/InterceptorConfig", null, 0);
         {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
             mv.visitCode();
@@ -56,7 +56,7 @@ public class Main implements Opcodes {
             mv.visitInsn(RETURN);
             Label l2 = new Label();
             mv.visitLabel(l2);
-            mv.visitLocalVariable("this", "Lcom/niangao/test/InterceptorConfig;", null, l0, l2, 0);
+            mv.visitLocalVariable("this", "Lcom/seewo/datamock/test/InterceptorConfig;", null, l0, l2, 0);
             mv.visitMaxs(1, 1);
             mv.visitEnd();
         }
