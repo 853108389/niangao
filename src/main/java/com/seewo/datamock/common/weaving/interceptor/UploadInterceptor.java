@@ -4,6 +4,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 /**
  * @Author NianGao
@@ -13,11 +14,30 @@ import javax.servlet.http.HttpServletResponse;
 public class UploadInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("r==========================我的interceptor==========================");
-        System.out.println("request " + request);
-        System.out.println("response " + response);
-        System.out.println("r==========================我的interceptor==========================");
+        System.out.println("========================================我的interceptor========================================");
+        System.out.println("===========request===========");
+        System.out.println("request.getContentType() " + request.getContentType());
+        System.out.println("request.getRequestURL() " + request.getRequestURL());
+        System.out.println("request.getMethod() " + request.getMethod());
+        System.out.println("request.getQueryString() " + request.getQueryString());
+        Enumeration<String> e = request.getHeaderNames();
+        while (e.hasMoreElements()) {
+            String headerName = (String) e.nextElement();
+            String headValue = request.getHeader(headerName);
+            System.out.println("header " + headerName + " __ " + headValue);
+        }
+        System.out.println("request.getParameterMap() " + request.getParameterMap());
+        System.out.println("===========request===========");
+
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        System.out.println("===========response===========");
+        System.out.println();
+        System.out.println("========================================我的interceptor========================================");
+        super.afterCompletion(request, response, handler, ex);
     }
 
     public void test() {

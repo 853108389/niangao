@@ -1,9 +1,13 @@
 package com.seewo.datamock.test;
 
+import com.seewo.datamock.common.weaving.interceptor.UploadInterceptor;
 import com.seewo.datamock.test2.TokenHandlerInterceptorAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * @Author NianGao
@@ -22,25 +26,15 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
         return new TokenHandlerInterceptorAdapter();
     }
 
-  /*  @Bean
-    public HandlerInterceptorAdapter getUploadInterceptor() {
-        HandlerInterceptorAdapter h = new HandlerInterceptorAdapter() {
-            @Override
-            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-                System.out.println("r==========================我的interceptor==========================");
-                System.out.println("request " + request);
-                System.out.println("response " + response);
-                System.out.println("r==========================我的interceptor==========================");
-                return true;
-            }
-        };
-        return h;
-    }*/
+    @Bean
+    public HandlerInterceptorAdapter getTest() {
+        return new UploadInterceptor();
+    }
 
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        InterceptorRegistration registration = registry.addInterceptor(this.getTokenHandler());
-////        registry.addInterceptor(this.getTokenHandler());
-//        registration.addPathPatterns(new String[]{"/roomcenter/**"});
-//        super.addInterceptors(registry);
-//    }
+    public void addInterceptors(InterceptorRegistry registry) {
+        InterceptorRegistration registration = registry.addInterceptor(this.getTokenHandler());
+//        registry.addInterceptor(this.getTokenHandler());
+        registration.addPathPatterns(new String[]{"/roomcenter/**"});
+        super.addInterceptors(registry);
+    }
 }

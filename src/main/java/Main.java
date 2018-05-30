@@ -13,11 +13,25 @@ import jdk.internal.org.objectweb.asm.*;
 public class Main implements Opcodes {
 
     public static void main(String[] args) {
+      /*  try {
+            Method getTest = InterceptorConfig.class.getDeclaredMethod("getTest", null);
+            System.out.println(Type.getMethodDescriptor(getTest));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
         Config.init();
-        testHttpUtils();
+        System.out.println(Config.weavingInterceptorClassName);
+        System.out.println(Config.weavingInterceptorName);
+        System.out.println(Config.weavingInterceptorPathPatterns);
+//        testHttpUtils();
 //        testAgent();//测试代理 TODO:重复添加问题,可能需要一个标志标量
 //        testAsm();//测试asm
+//        Int2 int2 = new Int2();
+//        int2.addInterceptors(null);
 //        testTrace();//测试trace
+//        testAsm();
+//        dump1();
+//        System.out.println(Type.getType(MyTrace.MyTraceInnerClass.class).getInternalName());
 //        dump();
 //        testUtils();
 //        testGetInfo();
@@ -25,43 +39,90 @@ public class Main implements Opcodes {
 
     //匿名
     public static byte[] dump1() {
+        ClassWriter cw = new ClassWriter(0);
+        FieldVisitor fv;
+        MethodVisitor mv;
+        AnnotationVisitor av0;
+
+        cw.visit(52, ACC_PUBLIC + ACC_SUPER, "com/seewo/datamock/test2/MyTrace", null, "org/springframework/web/servlet/handler/HandlerInterceptorAdapter", null);
+
+        cw.visitSource("MyTrace.java", null);
+
+        cw.visitInnerClass("com/seewo/datamock/test2/MyTrace$MyTraceInnerClass", "com/seewo/datamock/test2/MyTrace", "MyTraceInnerClass", ACC_PUBLIC + ACC_STATIC);
+
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+            mv.visitLineNumber(10, l0);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/springframework/web/servlet/handler/HandlerInterceptorAdapter", "<init>", "()V", false);
+            mv.visitInsn(RETURN);
+            Label l1 = new Label();
+            mv.visitLabel(l1);
+            mv.visitLocalVariable("this", "Lcom/seewo/datamock/test2/MyTrace;", null, l0, l1, 0);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "test2", "()V", null, null);
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+            mv.visitLineNumber(22, l0);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(0, 0);
+            mv.visitEnd();
+        }
+        cw.visitEnd();
+        ControllerScanner.writeToClass(cw, "D://test/testoooooo.class");
+        return cw.toByteArray();
+    }
+
+    public static byte[] dump() {
 
         ClassWriter cw = new ClassWriter(0);
         FieldVisitor fv;
         MethodVisitor mv;
         AnnotationVisitor av0;
 
-//        cw.visit(52, ACC_SUPER, "D://test/InterceptorConfig$1.class", null, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", null);
-//        cw.visitOuterClass();
-        //=============
-        cw.visit(52, ACC_PUBLIC + ACC_SUPER, "com/seewo/datamock/test/InterceptorConfig", null, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", null);
+        cw.visit(52, ACC_PUBLIC + ACC_SUPER, "com/seewo/datamock/test2/MyTrace$MyTraceInnerClass", null, "java/lang/Object", null);
 
-        cw.visitSource("InterceptorConfig.java", null);
-        {
-            av0 = cw.visitAnnotation("Lorg/springframework/context/annotation/Configuration;", true);
-            av0.visitEnd();
-        }
-        cw.visitInnerClass("com/seewo/datamock/test/InterceptorConfig$1.class", "com/seewo/datamock/test/InterceptorConfig", null, 0);
+        cw.visitSource("MyTrace.java", null);
+
+        cw.visitInnerClass("com/seewo/datamock/test2/MyTrace$MyTraceInnerClass", "com/seewo/datamock/test2/MyTrace", "MyTraceInnerClass", ACC_PUBLIC + ACC_STATIC);
+
         {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel(l0);
-            mv.visitLineNumber(21, l0);
+            mv.visitLineNumber(12, l0);
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", "<init>", "()V", false);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
             Label l1 = new Label();
             mv.visitLabel(l1);
-            mv.visitLineNumber(22, l1);
+            mv.visitLineNumber(13, l1);
             mv.visitInsn(RETURN);
             Label l2 = new Label();
             mv.visitLabel(l2);
-            mv.visitLocalVariable("this", "Lcom/seewo/datamock/test/InterceptorConfig;", null, l0, l2, 0);
+            mv.visitLocalVariable("this", "Lcom/seewo/datamock/test2/MyTrace$MyTraceInnerClass;", null, l0, l2, 0);
             mv.visitMaxs(1, 1);
             mv.visitEnd();
         }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "test1", "()V", null, null);
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel(l0);
+            mv.visitLineNumber(17, l0);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(0, 0);
+            mv.visitEnd();
+        }
         cw.visitEnd();
-        ControllerScanner.writeToClass(cw, "D://test/testtt.class");
+        ControllerScanner.writeToClass(cw, "D://test/tesiiiiinner.class");
         return cw.toByteArray();
     }
 
@@ -108,6 +169,7 @@ public class Main implements Opcodes {
 
     //生成traceInfo
     public static void testTrace() {
+//        ControllerScanner.getTraceInfo(MyTrace.MyTraceInnerClass.class);
         ControllerScanner.getTraceInfo(MyTrace.class);
         System.out.println("Trace完成");
     }
@@ -117,5 +179,19 @@ public class Main implements Opcodes {
         ControllerScanner.genEnhanceClasses(Config.mainBaseScanPack, ControllerAspect.getInstance(), Config.mainGenClassPos);
     }
 
+    @SuppressWarnings("all")
+    public static void testInnerClass() {
+//        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+//        try {
+//            ClassReader classReader = new ClassReader(Type.getType(clazz).getInternalName());//分析类
+//            InterceptorAdapter cv = new ControllerAdapter(classWriter, myAspect);//cv将所有事件转发给cw
+//            classReader.accept(cv, ClassReader.EXPAND_FRAMES);
+//            if (cv.isController() || isbuildAll) {
+//                writeToClass(classWriter, basePath + clazz.getName() + ".class");
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
 
 }

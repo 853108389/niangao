@@ -14,6 +14,8 @@ public class Config {
     public static List<String> IPackageName = new ArrayList<>();//需要扫描的包名
     public static String weavingPackageName = "";//要植入的包名
     public static String weavingInterceptorName;//植入的拦截器方法名
+    public static String weavingInterceptorClassName;//植入的拦截器类名
+    public static String weavingInterceptorPathPatterns;//植入的拦截器拦截路径 默认为/**
     private static Map<String, String> descMap = new HashMap<String, String>() {
         {
             put("", "");
@@ -75,8 +77,15 @@ public class Config {
 
     //植入配置
     public static void weavingConf() {
-        weavingPackageName = resourceBundle.getString("weavingPackageName").replace(".", "/").split(";")[0] + "/";
-        weavingInterceptorName = resourceBundle.getString("weavingInterceptorName").split(";")[0];
+        weavingPackageName = resourceBundle.getString("weavingPackageName").replace(".", "/").split(";")[0].trim() + "/";
+        weavingInterceptorName = resourceBundle.getString("weavingInterceptorName").split(";")[0].trim();
+        weavingInterceptorClassName = resourceBundle.getString("weavingInterceptorClassName").split(";")[0].trim();
+        String path = resourceBundle.getString("weavingInterceptorPathPatterns").trim();
+        if (!(path.equals(";") || path.equals(""))) {
+            weavingInterceptorPathPatterns = path.split(";")[0].trim();
+        } else {
+            weavingInterceptorPathPatterns = "/**";
+        }
     }
 
     //平台配置
@@ -87,10 +96,13 @@ public class Config {
         catName = resourceBundle.getString("catName");
         colName = resourceBundle.getString("colName");
         groupName = resourceBundle.getString("groupName");
-        Arrays.stream(resourceBundle.getString("headers").split("&")).forEach(entry -> {
-            String[] split = entry.split("=");
-            defaultHeaders.put(split[0], split[1]);
-        });
+        String headers = resourceBundle.getString("headers").trim();
+        if (!(headers.equals(";") || headers.equals(""))) {
+            Arrays.stream(resourceBundle.getString("headers").split("&")).forEach(entry -> {
+                String[] split = entry.split("=");
+                defaultHeaders.put(split[0], split[1]);
+            });
+        }
     }
 
     //开发时配置

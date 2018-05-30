@@ -27,9 +27,9 @@
                 |-interceptor(拦截器)
                     |-UploadInterceptor.java TODO:植入的拦截器类
                 |-utils(工具类)
-                    -WeavingUtils.java 被植入的方法,以及从从被构造上传参数到上传之间的全过程
+                    |-WeavingUtils.java 被植入的方法,以及从从被构造上传参数到上传之间的全过程
             |-Config.java 读取配置文件,并加载其中参数到配置中.
-        -http(用于向平台发送http青穹)
+        -http(用于向平台发送http请求)
             |-bean
                 |-Col.java 对应分类目录信息
                 |-FormParams.java 对应表单参数
@@ -74,5 +74,7 @@
     4.命令行代理启动
       格式如 java -javaagent:D:\workplace\test\out\artifacts\seewo_datamock\seewo-datamock.jar=Hello -jar D:\seewo-roomcenter.jar
       java -javaagent:${此jar包的全路径}=${自定义参数} -jar ${被代理启动jar的全路径}
-三丶附: 无
+三丶附:
+    1.项目中的jar包和打包成jar后引用的jar是不一样的
+    2.不能直接将拦截器通过asm植入到代理jar内.正确的方法是将自定义拦截器编译后,将.class文件拷贝到resources目录下
 

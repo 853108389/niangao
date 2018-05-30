@@ -36,7 +36,6 @@ public class InterceptorMethodAdapter extends AdviceAdapter {
 
     @Override
     public void visitMethodInsn(int i, String s, String name, String desc, boolean b) {
-        System.out.println(i + "__" + s + "__" + name + "__" + desc + "__" + b);
         mv.visitMethodInsn(i, s, name, desc, b);
     }
 
@@ -46,16 +45,17 @@ public class InterceptorMethodAdapter extends AdviceAdapter {
         //将我们的bean注册到拦截器栈中
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, owner, Config.weavingInterceptorName, "()L" + Config.weavingPackageName + "UploadInterceptor;", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, owner, Config.weavingInterceptorName, "()Lorg/springframework/web/servlet/handler/HandlerInterceptorAdapter;", false);
         mv.visitMethodInsn(INVOKEVIRTUAL, "org/springframework/web/servlet/config/annotation/InterceptorRegistry", "addInterceptor", "(Lorg/springframework/web/servlet/HandlerInterceptor;)Lorg/springframework/web/servlet/config/annotation/InterceptorRegistration;", false);
         mv.visitInsn(ICONST_1);
         mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
         mv.visitInsn(DUP);
         mv.visitInsn(ICONST_0);
-        mv.visitLdcInsn("/**");
+        mv.visitLdcInsn(Config.weavingInterceptorPathPatterns);
         mv.visitInsn(AASTORE);
         mv.visitMethodInsn(INVOKEVIRTUAL, "org/springframework/web/servlet/config/annotation/InterceptorRegistration", "addPathPatterns", "([Ljava/lang/String;)Lorg/springframework/web/servlet/config/annotation/InterceptorRegistration;", false);
         mv.visitInsn(POP);
+        System.out.println("修改成功................................................");
     }
 
     @Override

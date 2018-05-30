@@ -1,7 +1,8 @@
 package com.seewo.datamock.test2;
 
+import com.seewo.datamock.common.Config;
+import com.seewo.datamock.common.utils.MyClassLoader;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
@@ -10,37 +11,21 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @description
  */
 public class MyTrace extends HandlerInterceptorAdapter {
-    //    public void test1(String xxx, String yyyyyy) {
-//        Map<String, String> map = new HashMap<>();
-//        map.put("aaaaa", xxx);
-//        map.put("bbbbbb", yyyyyy);
-//    }
-//    public void test2() {
-//        List<String> list = new ArrayList<>();
-//        list.add("aaaa");
-//        list.add("bbb");
-//        list.add(null);
-//    }
-
     @Bean
-    public TestInterceptorAdapter getTokenHandler() {
-        return new TestInterceptorAdapter();
+    public static HandlerInterceptorAdapter getWeavingHandler_() {
+        MyClassLoader myClassLoader = new MyClassLoader();
+        try {
+            Class<?> uploadInterceptor = myClassLoader.findClass(Config.weavingInterceptorClassName);
+            Object o = uploadInterceptor.newInstance();
+            if (o instanceof HandlerInterceptorAdapter) {
+                HandlerInterceptorAdapter weavingHandler = (HandlerInterceptorAdapter) uploadInterceptor.newInstance();
+                System.out.println(o);
+                return weavingHandler;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("拦截器加载异常.......");
+        return null;
     }
-
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(this.getTokenHandler()).addPathPatterns("/roomcenter/**");
-    }
-
-
-    public static Object inputValueFromReq2() {
-        return String.valueOf(123);
-    }
-//    public void test3() {
-//
-//        String methodName = "aaaaaaaaaaa";
-//        List<String> methodList = new ArrayList<>();//url
-//        List<String> urlList = new ArrayList<>();//请求方式
-//        HashMap map = new HashMap();//方法名
-//        WeavingUtils.doMock(null, null, null, null, null, null, null);
-//    }
 }

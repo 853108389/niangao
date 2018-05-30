@@ -41,10 +41,10 @@ public class ControllerScanner {
         if (isParallel) {
 //            TODO:拦截器的增强
             c.stream().parallel().forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));// 如果使用并行处理
-//            c.stream().parallel().forEach(clazz -> ControllerScanner.enhanceInterceptor(clazz, myAspect, basePath, isbuildAll));// 如果使用并行处理
+//            c.stream().parallel().forEach(clazz -> ControllerScanner.enhanceInterceptor(clazz, myAspect, basePath, isbuildAll));// 拦截器
         } else {
             c.forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));
-//            c.stream().forEach(clazz -> ControllerScanner.enhanceInterceptor(clazz, myAspect, basePath, isbuildAll));
+//            c.stream().forEach(clazz -> ControllerScanner.enhanceInterceptor(clazz, myAspect, basePath, isbuildAll));// 拦截器
         }
     }
 
@@ -133,11 +133,11 @@ public class ControllerScanner {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         ClassReader classReader = new ClassReader(in);//分析类
 //TODO:拦截器的增强
-        ControllerAdapter cv = new ControllerAdapter(classWriter, myAspect);//cv将所有事件转发给cw
-//        InterceptorAdapter cv = new InterceptorAdapter(classWriter);
+//        ControllerAdapter cv = new ControllerAdapter(classWriter, myAspect);// 拦截器
+        InterceptorAdapter cv = new InterceptorAdapter(classWriter);
         classReader.accept(cv, ClassReader.EXPAND_FRAMES);
-//        isWrite = cv.isInterceptorConfig();
-        boolean isWrite = cv.isController();
+        boolean isWrite = cv.isInterceptorConfig();
+//        boolean isWrite = cv.isController();// 拦截器
         byte car[] = classWriter.toByteArray();
         if (isWrite || isbuildAll) {
             if (!("".equals(basePath) || basePath == null)) {

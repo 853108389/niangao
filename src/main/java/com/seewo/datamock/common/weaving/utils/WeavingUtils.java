@@ -118,6 +118,10 @@ public class WeavingUtils {
                         status = "POST_FILE";
                         //post_file  TODO:处理文件的情况 @Multipart注解情况适配
                         break;
+                    default:
+                        //TODO:其他的请求头
+                        System.out.println("WeavingUtils: 未记录的请求头: " + header);
+                        break;
                 }
             } else {
                 //没有request对象,
