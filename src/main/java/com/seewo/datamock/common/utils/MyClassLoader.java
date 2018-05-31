@@ -16,6 +16,7 @@ public class MyClassLoader extends ClassLoader {
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException {
         if (!name.equals(Config.weavingInterceptorClassName)) {
+            //由于类加载机制,非我们自己的类一定要用当前线程的类加载器去加载!
             System.out.println("getContextClassLoader(): " + Thread.currentThread().getContextClassLoader().getClass().getName());
             return Thread.currentThread().getContextClassLoader().loadClass(name);
         } else {
@@ -27,6 +28,7 @@ public class MyClassLoader extends ClassLoader {
     public Class<?> findClass(String name) throws ClassNotFoundException {
         byte[] res = new byte[1024];
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+             //使用流,而不是文件系统,因为已经打成jar了!
              InputStream in = MyClassLoader.class.getClassLoader().getResourceAsStream(name + ".class");
         ) {
             System.out.println(name + ".class" + "____" + in);

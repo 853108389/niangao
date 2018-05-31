@@ -2,6 +2,7 @@ package com.seewo.datamock.common.utils;
 
 import com.seewo.datamock.common.Config;
 import com.seewo.datamock.common.aspect.BaseAspect;
+import com.seewo.datamock.common.aspect.MyAspectFactory;
 import com.seewo.datamock.common.myAdapter.ConAdviceAdapter;
 import com.seewo.datamock.common.myAdapter.ControllerAdapter;
 import com.seewo.datamock.common.myAdapter.InterceptorAdapter;
@@ -67,8 +68,26 @@ public class ClassScanner {
         }
     }
 
-    public static void genEnhanceClasses(String pack, BaseAspect baseAspect, String basePath) {
-        genEnhanceClasses(pack, baseAspect, basePath, false, false);
+    public static BaseAspect getAspect() {
+        BaseAspect aspect = null;
+        switch (Config.enhanceType) {
+            case "controller":
+                aspect = MyAspectFactory.getAspect("ControllerAspect");
+                break;
+            case "interceptor":
+                aspect = MyAspectFactory.getAspect("interceptorAspect");
+                break;
+            case "conadvice":
+                aspect = MyAspectFactory.getAspect("ControllerAspect");//TODO:
+                break;
+            default:
+                System.out.println("该参数未能识别: " + Config.enhanceType);
+        }
+        return aspect;
+    }
+
+    public static void genEnhanceClasses(String pack, String basePath) {
+        genEnhanceClasses(pack, getAspect(), basePath, false, false);
     }
 
     /**
@@ -152,12 +171,11 @@ public class ClassScanner {
     public static byte[] controllerScanner(InputStream in, BaseAspect baseAspect, String basePath, boolean isbuildAll, String className) throws IOException {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         ClassReader classReader = new ClassReader(in);//分析类
-//TODO:拦截器的增强
         ControllerAdapter cv = new ControllerAdapter(classWriter, baseAspect);// 控制器
         classReader.accept(cv, ClassReader.EXPAND_FRAMES);
         boolean isWrite = cv.isController();// 控制器
         byte car[] = classWriter.toByteArray();
-        if (isWrite || isbuildAll) {
+        if (Config.isGenClassToDisk && (isbuildAll || isWrite)) {
             if (!("".equals(basePath) || basePath == null)) {
                 writeToClass(classWriter, basePath + className + ".class");
             }
@@ -169,12 +187,11 @@ public class ClassScanner {
     public static byte[] interceptorScanner(InputStream in, BaseAspect baseAspect, String basePath, boolean isbuildAll, String className) throws IOException {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         ClassReader classReader = new ClassReader(in);//分析类
-//TODO:拦截器的增强
-        InterceptorAdapter cv = new InterceptorAdapter(classWriter);//拦截器
+        InterceptorAdapter cv = new InterceptorAdapter(classWriter, baseAspect);//拦截器
         classReader.accept(cv, ClassReader.EXPAND_FRAMES);
         boolean isWrite = cv.isInterceptorConfig();// 拦截器
         byte car[] = classWriter.toByteArray();
-        if (isWrite || isbuildAll) {
+        if (Config.isGenClassToDisk && (isbuildAll || isWrite)) {
             if (!("".equals(basePath) || basePath == null)) {
                 writeToClass(classWriter, basePath + className + ".class");
             }
@@ -186,12 +203,11 @@ public class ClassScanner {
     public static byte[] conAdviceScanner(InputStream in, BaseAspect baseAspect, String basePath, boolean isbuildAll, String className) throws IOException {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         ClassReader classReader = new ClassReader(in);//分析类
-//TODO:拦截器的增强
-        ConAdviceAdapter cv = new ConAdviceAdapter(classWriter);//控制器通知
+        ConAdviceAdapter cv = new ConAdviceAdapter(classWriter, baseAspect);//控制器通知
         classReader.accept(cv, ClassReader.EXPAND_FRAMES);
         boolean isWrite = cv.isControllerAdvice();//控制器通知
         byte car[] = classWriter.toByteArray();
-        if (isWrite || isbuildAll) {
+        if (Config.isGenClassToDisk && (isbuildAll || isWrite)) {
             if (!("".equals(basePath) || basePath == null)) {
                 writeToClass(classWriter, basePath + className + ".class");
             }

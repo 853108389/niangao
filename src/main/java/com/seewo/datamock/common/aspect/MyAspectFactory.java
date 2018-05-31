@@ -13,6 +13,9 @@ public class MyAspectFactory {
         if (aspect.equalsIgnoreCase("ControllerAspect")) {
             return ControllerAspect.getInstance();
         }
+        if (aspect.equalsIgnoreCase("interceptorAspect")) {
+            return InterceptorAspect.getInstance();
+        }
         return null;
     }
 

@@ -45,8 +45,12 @@ public class ClassTransformer implements ClassFileTransformer {
         } catch (IOException e) {
             System.out.println("IO异常...  " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("转换异常,不用理它....  ");
-            e.printStackTrace();
+            if (e instanceof ClassCastException || e instanceof ClassNotFoundException) {
+                System.out.println("转换异常,不用理它....  ");
+//                e.printStackTrace();
+            } else {
+                e.printStackTrace();
+            }
         }
         return classfileBuffer;
     }

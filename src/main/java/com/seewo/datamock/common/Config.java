@@ -31,6 +31,7 @@ public class Config {
     private static boolean isAllScan = true;
     public static List<String> EPackageBaseName = new ArrayList<>();//不扫描的包名
     public static String enhanceType = "controller";//增强的类型
+    public static boolean isGenClassToDisk = true;//是否生成到磁盘
     //==========================平台配置
     public static String username; //用户名
     public static String password;//密码
@@ -76,6 +77,10 @@ public class Config {
         String type = resourceBundle.getString("enhanceType").trim();
         if (!(type.equals(";") || type.equals(""))) {
             enhanceType = type.split(";")[0].trim();
+        }
+        String flag = resourceBundle.getString("isGenClassToDisk").trim();
+        if (!(flag.equals(";") || flag.equals(""))) {
+            isGenClassToDisk = flag.split(";")[0].trim().equals("true");
         }
     }
 

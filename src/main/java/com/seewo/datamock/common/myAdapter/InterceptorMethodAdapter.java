@@ -1,6 +1,5 @@
 package com.seewo.datamock.common.myAdapter;
 
-import com.seewo.datamock.common.Config;
 import com.seewo.datamock.common.aspect.BaseAspect;
 import jdk.internal.org.objectweb.asm.MethodVisitor;
 import jdk.internal.org.objectweb.asm.Opcodes;
@@ -42,20 +41,21 @@ public class InterceptorMethodAdapter extends AdviceAdapter {
 
     @Override
     protected void onMethodEnter() {
-        //将我们的bean注册到拦截器栈中
-        mv.visitVarInsn(ALOAD, 1);
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, owner, Config.weavingInterceptorName, "()Lorg/springframework/web/servlet/handler/HandlerInterceptorAdapter;", false);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "org/springframework/web/servlet/config/annotation/InterceptorRegistry", "addInterceptor", "(Lorg/springframework/web/servlet/HandlerInterceptor;)Lorg/springframework/web/servlet/config/annotation/InterceptorRegistration;", false);
-        mv.visitInsn(ICONST_1);
-        mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
-        mv.visitInsn(DUP);
-        mv.visitInsn(ICONST_0);
-        mv.visitLdcInsn(Config.weavingInterceptorPathPatterns);
-        mv.visitInsn(AASTORE);
-        mv.visitMethodInsn(INVOKEVIRTUAL, "org/springframework/web/servlet/config/annotation/InterceptorRegistration", "addPathPatterns", "([Ljava/lang/String;)Lorg/springframework/web/servlet/config/annotation/InterceptorRegistration;", false);
-        mv.visitInsn(POP);
-        System.out.println("修改成功................................................");
+        aspect.before();
+//        //将我们的bean注册到拦截器栈中
+//        mv.visitVarInsn(ALOAD, 1);
+//        mv.visitVarInsn(ALOAD, 0);
+//        mv.visitMethodInsn(INVOKEVIRTUAL, owner, Config.weavingInterceptorName, "()Lorg/springframework/web/servlet/handler/HandlerInterceptorAdapter;", false);
+//        mv.visitMethodInsn(INVOKEVIRTUAL, "org/springframework/web/servlet/config/annotation/InterceptorRegistry", "addInterceptor", "(Lorg/springframework/web/servlet/HandlerInterceptor;)Lorg/springframework/web/servlet/config/annotation/InterceptorRegistration;", false);
+//        mv.visitInsn(ICONST_1);
+//        mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
+//        mv.visitInsn(DUP);
+//        mv.visitInsn(ICONST_0);
+//        mv.visitLdcInsn(Config.weavingInterceptorPathPatterns);
+//        mv.visitInsn(AASTORE);
+//        mv.visitMethodInsn(INVOKEVIRTUAL, "org/springframework/web/servlet/config/annotation/InterceptorRegistration", "addPathPatterns", "([Ljava/lang/String;)Lorg/springframework/web/servlet/config/annotation/InterceptorRegistration;", false);
+//        mv.visitInsn(POP);
+
     }
 
     @Override

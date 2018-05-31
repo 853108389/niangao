@@ -1,7 +1,7 @@
 一丶目录结构
     |-java
         |-common(字节码植入的类)
-            |-aspect(切面,将对方法植入的代码进行抽象,减少耦合,以后切面变多了,可以继续抽象)
+            |-aspect(切面,为asm代码,减少耦合,以后切面变多了,可以继续抽象)
                 |-BaseAspect.java 切面的抽象类
                 |-MyAspectFactory.java 切面类工厂
                 |-ControllerAspect.java 核心切面类,用于Controller
@@ -82,6 +82,16 @@
         打包后引用的jar
         不一样
     2.不能直接将拦截器通过asm植入到代理jar内.正确的方法是将自定义拦截器编译后,将.class文件拷贝到resources目录下
-    3.所以,自定义的,与spring产生依赖的类,都要小心处理
+    3.所以,自定义的,与spring产生依赖的类,都要小心处理,不能在本jar中处理任何与spring相关的类
     4.效果: ControllerAdvice > Interceptor > controller
     5.不要随便改类名
+    6.配置文件为空时可以写';' 不要擅自删除某一项
+    7.一些细节在代码中标明
+四丶一些未解决的问题或者坑
+    1.interceptor的request的流只能获取一次的问题
+    2.interceptor拿不到@requestBody的返回值
+    3.ResponseBodyAdvice的接口的request的流是已经关闭的,暂时没发现可以获取到请求体的方法
+    4.controller方式增强,如果存在着被拦截器拦截的请求,是不会被录入的
+    5.ControllerAdvice并没有考虑到以下问题:
+       5.1.多个ControllerAdvice
+       5.2.存在着已经实现过ResponseBodyAdvice的接口,这个时候需要写methodAdapter,把新增方法改为修改方法
