@@ -6,21 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="929e05e4-6b8a-4967-be27-3276da069101" name="Default" comment="[modify][what][添加][整合项目,添加切面等]">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/aspect/InterceptorAspect.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/test2/TestResponseBodyAdvice.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/readme.txt" afterPath="$PROJECT_DIR$/readme.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/Main.java" afterPath="$PROJECT_DIR$/src/main/java/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/Config.java" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/Config.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/aspect/MyAspectFactory.java" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/aspect/MyAspectFactory.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/myAdapter/InterceptorAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/myAdapter/InterceptorAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/myAdapter/InterceptorMethodAdapter.java" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/myAdapter/InterceptorMethodAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/utils/ClassScanner.java" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/utils/ClassScanner.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/utils/MyClassLoader.java" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/utils/MyClassLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/intrumentation/ClassTransformer.java" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/intrumentation/ClassTransformer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/intrumentation/MyAgent.java" afterPath="$PROJECT_DIR$/src/main/java/com/seewo/datamock/intrumentation/MyAgent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/config/config.properties" afterPath="$PROJECT_DIR$/src/main/resources/config/config.properties" />
-    </list>
+    <list default="true" id="929e05e4-6b8a-4967-be27-3276da069101" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -986,7 +972,7 @@
       <workItem from="1527468311565" duration="22056000" />
       <workItem from="1527505413419" duration="2650000" />
       <workItem from="1527555240126" duration="58562000" />
-      <workItem from="1527752609382" duration="11221000" />
+      <workItem from="1527752609382" duration="11264000" />
     </task>
     <task id="LOCAL-00001" summary="字节码增强controller,从而将信息上传到测试平台&#10;TODO:增强interceptor">
       <created>1527492428998</created>
@@ -1030,11 +1016,18 @@
       <option name="project" value="LOCAL" />
       <updated>1527750379634</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="[modify][what][添加][整合项目,添加切面等]">
+      <created>1527767196826</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1527767196826</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="486464000" />
+    <option name="totallyTimeSpent" value="486507000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
