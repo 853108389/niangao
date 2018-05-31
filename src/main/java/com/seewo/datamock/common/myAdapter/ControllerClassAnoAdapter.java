@@ -1,6 +1,6 @@
 package com.seewo.datamock.common.myAdapter;
 
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
 import jdk.internal.org.objectweb.asm.AnnotationVisitor;
 import jdk.internal.org.objectweb.asm.Opcodes;
 
@@ -10,9 +10,9 @@ import jdk.internal.org.objectweb.asm.Opcodes;
  * @description 类的注解类访问器适配器
  */
 public class ControllerClassAnoAdapter extends AnnotationVisitor {
-    private static MyAspect aspect = null;//增强切面
+    private static BaseAspect aspect = null;//增强切面
 
-    public ControllerClassAnoAdapter(AnnotationVisitor annotationVisitor, MyAspect aspect) {
+    public ControllerClassAnoAdapter(AnnotationVisitor annotationVisitor, BaseAspect aspect) {
         super(Opcodes.ASM5, annotationVisitor);
         this.aspect = aspect;
     }

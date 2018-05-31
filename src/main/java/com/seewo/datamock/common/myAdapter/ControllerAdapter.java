@@ -1,7 +1,7 @@
 package com.seewo.datamock.common.myAdapter;
 
 import com.seewo.datamock.common.Config;
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
 import jdk.internal.org.objectweb.asm.*;
 
 /**
@@ -13,15 +13,15 @@ public class ControllerAdapter extends ClassVisitor implements Opcodes {
     private String owner; //记住类名
     private boolean isInterface; //判断改类是否为接口,如果是就不进行增强
     private boolean isController = false;//判断是否是Controller
-    private MyAspect aspect = null;
+    private BaseAspect aspect = null;
 
     public ControllerAdapter(ClassVisitor cv) {
         super(Opcodes.ASM5, cv);
     }
 
-    public ControllerAdapter(ClassVisitor cv, MyAspect myAspect) {
+    public ControllerAdapter(ClassVisitor cv, BaseAspect baseAspect) {
         super(Opcodes.ASM5, cv);
-        this.aspect = myAspect;
+        this.aspect = baseAspect;
     }
 
 
@@ -73,15 +73,12 @@ public class ControllerAdapter extends ClassVisitor implements Opcodes {
                 exceptions);
 //        System.out.println("_" + name);
         if (!isInterface && mv != null) {
-            if (!isController) {
-                cv.visitEnd();//如果不是Controller 结束扫描
-            } else {
+            if (isController) {
                 //如果是Con,则进行方法增强
                 System.out.println("methodname " + name);
                 ControllerMethodAdapter controllerMethodAdapter = new ControllerMethodAdapter(access, name, desc, signature, exceptions, mv, owner, aspect);
                 mv = controllerMethodAdapter;
                 aspect.setMv(controllerMethodAdapter);
-
             }
         }
         return mv;

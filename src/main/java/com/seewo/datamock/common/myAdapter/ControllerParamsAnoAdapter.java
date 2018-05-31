@@ -1,6 +1,6 @@
 package com.seewo.datamock.common.myAdapter;
 
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
 import com.seewo.datamock.common.weaving.beans.AnnEntity;
 import com.seewo.datamock.common.weaving.beans.AnnEntry;
 import com.seewo.datamock.common.weaving.beans.EnumEntry;
@@ -13,7 +13,7 @@ import jdk.internal.org.objectweb.asm.Opcodes;
  * @description 注意:时序只有一次, 不存在重复,参数注解访问和方法注解访问不一样
  */
 public class ControllerParamsAnoAdapter extends AnnotationVisitor {
-    private static MyAspect aspect = null;//增强切面
+    private static BaseAspect aspect = null;//增强切面
     private AnnEntity annEntity = null;//注解实体
 
     /**
@@ -22,7 +22,7 @@ public class ControllerParamsAnoAdapter extends AnnotationVisitor {
      * @param annotationVisitor
      * @param aspect
      */
-    public ControllerParamsAnoAdapter(AnnotationVisitor annotationVisitor, MyAspect aspect, int index) {
+    public ControllerParamsAnoAdapter(AnnotationVisitor annotationVisitor, BaseAspect aspect, int index) {
         super(Opcodes.ASM5, annotationVisitor);
         this.aspect = aspect;
         this.annEntity = aspect.getInfo().getParamsAnnMap().get(index);

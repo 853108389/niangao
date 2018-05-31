@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * @Author NianGao
  * @Date 2018/5/7.
- * @description 用于保存方法信息
+ * @description 用于保存ControllerAdapter适配后的信息
  */
 @Data
 public class Info {

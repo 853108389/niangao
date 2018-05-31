@@ -1,7 +1,8 @@
 package com.seewo.datamock.common.utils;
 
 import com.seewo.datamock.common.Config;
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
+import com.seewo.datamock.common.myAdapter.ConAdviceAdapter;
 import com.seewo.datamock.common.myAdapter.ControllerAdapter;
 import com.seewo.datamock.common.myAdapter.InterceptorAdapter;
 import jdk.internal.org.objectweb.asm.ClassReader;
@@ -24,51 +25,65 @@ import java.util.Set;
  * @Date 2018/5/8.
  * @description 核心api的入口
  */
-public class ControllerScanner {
+public class ClassScanner {
 //======================================================================================================================
 //asm相关
 //======================================================================================================================
 
     /**
+     * 开发时扫描类
+     *
      * @param pack       扫描包名
-     * @param myAspect   指定增强切面
+     * @param baseAspect 指定增强切面
      * @param basePath   生成字节码路径
      * @param isbuildAll 是否生成所有的字节码,包括没增强的(默认不输出没增强字节码)
      * @param isParallel 是否采用并行处理
      */
-    public static void genEnhanceClasses(String pack, MyAspect myAspect, String basePath, boolean isbuildAll, boolean isParallel) {
+    public static void genEnhanceClasses(String pack, BaseAspect baseAspect, String basePath, boolean isbuildAll, boolean isParallel) {
         Set<Class<?>> c = ClassTools.getClasses(pack)/*.stream().filter(a -> !a.getName().contains("$")).collect(Collectors.toSet())*/;
-        if (isParallel) {
-//            TODO:拦截器的增强
-            c.stream().parallel().forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));// 如果使用并行处理
-//            c.stream().parallel().forEach(clazz -> ControllerScanner.enhanceInterceptor(clazz, myAspect, basePath, isbuildAll));// 拦截器
-        } else {
-            c.forEach(clazz -> ControllerScanner.enhanceController(clazz, myAspect, basePath, isbuildAll));
-//            c.stream().forEach(clazz -> ControllerScanner.enhanceInterceptor(clazz, myAspect, basePath, isbuildAll));// 拦截器
+        switch (Config.enhanceType) {
+            case "controller":
+                if (isParallel) {
+                    c.stream().parallel().forEach(clazz -> ClassScanner.enhanceController(clazz, baseAspect, basePath, isbuildAll));// 如果使用并行处理
+                } else {
+                    c.forEach(clazz -> ClassScanner.enhanceController(clazz, baseAspect, basePath, isbuildAll));//控制器
+                }
+            case "interceptor":
+                if (isParallel) {
+                    c.stream().parallel().forEach(clazz -> ClassScanner.enhanceInterceptor(clazz, baseAspect, basePath, isbuildAll));
+                } else {
+                    c.forEach(clazz -> ClassScanner.enhanceInterceptor(clazz, baseAspect, basePath, isbuildAll));// 拦截器
+                }
+            case "conadvice":
+                if (isParallel) {
+                    c.stream().parallel().forEach(clazz -> ClassScanner.enhanceControllerAdvice(clazz, baseAspect, basePath, isbuildAll));
+                } else {
+                    c.forEach(clazz -> ClassScanner.enhanceControllerAdvice(clazz, baseAspect, basePath, isbuildAll));//控制器通知
+                }
+            default:
+                c.stream().forEach(clazz -> ClassScanner.enhanceController(clazz, baseAspect, basePath, isbuildAll));// 如果使用并行处理
+                System.out.println("该参数未能识别: " + Config.enhanceType);
+
         }
     }
 
-    public static void genEnhanceClasses(String pack, MyAspect myAspect, String basePath) {
-        genEnhanceClasses(pack, myAspect, basePath, false, false);
-    }
-
-    public static void genEnhanceClasses(String pack, MyAspect myAspect, String basePath, boolean isbuildAll) {
-        genEnhanceClasses(pack, myAspect, basePath, isbuildAll, false);
+    public static void genEnhanceClasses(String pack, BaseAspect baseAspect, String basePath) {
+        genEnhanceClasses(pack, baseAspect, basePath, false, false);
     }
 
     /**
      * 将某个controller的字节码进行转换并生成到磁盘
      *
      * @param clazz      需要增强类
-     * @param myAspect   增强切面类
+     * @param baseAspect 增强切面类
      * @param basePath   增强后的类字节码输出位置
      * @param isbuildAll 是否生成所有的字节码
      */
-    private static void enhanceController(Class<?> clazz, MyAspect myAspect, String basePath, boolean isbuildAll) {
+    private static void enhanceController(Class<?> clazz, BaseAspect baseAspect, String basePath, boolean isbuildAll) {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         try {
             ClassReader classReader = new ClassReader(Type.getType(clazz).getInternalName());//分析类
-            ControllerAdapter cv = new ControllerAdapter(classWriter, myAspect);//cv将所有事件转发给cw
+            ControllerAdapter cv = new ControllerAdapter(classWriter, baseAspect);//cv将所有事件转发给cw
             classReader.accept(cv, ClassReader.EXPAND_FRAMES);
             if (cv.isController() || isbuildAll) {
                 writeToClass(classWriter, basePath + clazz.getName() + ".class");
@@ -78,11 +93,12 @@ public class ControllerScanner {
         }
     }
 
-    private static void enhanceInterceptor(Class<?> clazz, MyAspect myAspect, String basePath, boolean isbuildAll) {
+    //将某个Interceptor的字节码进行转换并生成到磁盘
+    private static void enhanceInterceptor(Class<?> clazz, BaseAspect baseAspect, String basePath, boolean isbuildAll) {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         try {
             ClassReader classReader = new ClassReader(Type.getType(clazz).getInternalName());//分析类
-            InterceptorAdapter cv = new InterceptorAdapter(classWriter, myAspect);//cv将所有事件转发给cw
+            InterceptorAdapter cv = new InterceptorAdapter(classWriter, baseAspect);//cv将所有事件转发给cw
             classReader.accept(cv, ClassReader.EXPAND_FRAMES);
             if (cv.isInterceptorConfig() || isbuildAll) {
                 writeToClass(classWriter, basePath + clazz.getName() + ".class");
@@ -92,52 +108,54 @@ public class ControllerScanner {
         }
     }
 
-
-    /**
-     * 将某个类的字节码进行转换并返回字节码数组(此方法用于代理模式启动)
-     *
-     * @param className  需要增强类名
-     * @param myAspect   增强切面类
-     * @param basePath   (测试)增强后的类字节码输出位置(默认不输出)
-     * @param isbuildAll (测试)是否生成所有的字节码,包括没增强的(默认不输出没增强字节码)
-     * @return 增强后的字节码数组
-     */
-    public static byte[] classScanner(String className, MyAspect myAspect, String basePath, boolean isbuildAll) throws IOException {
+    //将某个@ControllerAdvice的字节码进行转换并生成到磁盘
+    private static void enhanceControllerAdvice(Class<?> clazz, BaseAspect baseAspect, String basePath, boolean isbuildAll) {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        System.out.println("ClassReader " + className);
-        ClassReader classReader = new ClassReader(className);//分析类
-        ControllerAdapter cv = new ControllerAdapter(classWriter, myAspect);//cv将所有事件转发给cw
-        classReader.accept(cv, ClassReader.EXPAND_FRAMES);
-        boolean isWrite = cv.isController();
-        byte car[] = classWriter.toByteArray();
-        if (isWrite || isbuildAll) {
-            if (!("".equals(basePath) || basePath == null)) {
-                writeToClass(classWriter, basePath + className + ".class");
+        try {
+            ClassReader classReader = new ClassReader(Type.getType(clazz).getInternalName());//分析类
+            ConAdviceAdapter cv = new ConAdviceAdapter(classWriter, baseAspect);//cv将所有事件转发给cw
+            classReader.accept(cv, ClassReader.EXPAND_FRAMES);
+            if (cv.isControllerAdvice() || isbuildAll) {
+                writeToClass(classWriter, basePath + clazz.getName() + ".class");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return car;
     }
 
     /**
-     * 适配   通过类名加载不到类
+     * 代理启动扫描类
      *
      * @param in         需要增强的类的流
-     * @param myAspect   切面
+     * @param baseAspect 切面
      * @param basePath   基础路径
-     * @param isbuildAll 是否生成所有类 为false
      * @param className  需要增强的类名
      * @return 增强后的字节数组
      * @throws IOException
      */
-    public static byte[] classScanner(InputStream in, MyAspect myAspect, String basePath, boolean isbuildAll, String className) throws IOException {
+
+    public static byte[] classScanner(InputStream in, BaseAspect baseAspect, String basePath, String className) throws IOException {
+        switch (Config.enhanceType) {
+            case "controller":
+                return controllerScanner(in, baseAspect, basePath, false, className);
+            case "interceptor":
+                return interceptorScanner(in, baseAspect, basePath, false, className);
+            case "conadvice":
+                return conAdviceScanner(in, baseAspect, basePath, false, className);
+            default:
+                System.out.println("该参数未能识别: " + Config.enhanceType);
+                return controllerScanner(in, baseAspect, basePath, false, className);
+        }
+    }
+
+    //控制器扫描
+    public static byte[] controllerScanner(InputStream in, BaseAspect baseAspect, String basePath, boolean isbuildAll, String className) throws IOException {
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         ClassReader classReader = new ClassReader(in);//分析类
 //TODO:拦截器的增强
-//        ControllerAdapter cv = new ControllerAdapter(classWriter, myAspect);// 拦截器
-        InterceptorAdapter cv = new InterceptorAdapter(classWriter);
+        ControllerAdapter cv = new ControllerAdapter(classWriter, baseAspect);// 控制器
         classReader.accept(cv, ClassReader.EXPAND_FRAMES);
-        boolean isWrite = cv.isInterceptorConfig();
-//        boolean isWrite = cv.isController();// 拦截器
+        boolean isWrite = cv.isController();// 控制器
         byte car[] = classWriter.toByteArray();
         if (isWrite || isbuildAll) {
             if (!("".equals(basePath) || basePath == null)) {
@@ -147,17 +165,40 @@ public class ControllerScanner {
         return car;
     }
 
-    public static byte[] classScanner(InputStream in, MyAspect myAspect, String basePath, String className) throws IOException {
-        return classScanner(in, myAspect, basePath, false, className);
+    //拦截器扫描
+    public static byte[] interceptorScanner(InputStream in, BaseAspect baseAspect, String basePath, boolean isbuildAll, String className) throws IOException {
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        ClassReader classReader = new ClassReader(in);//分析类
+//TODO:拦截器的增强
+        InterceptorAdapter cv = new InterceptorAdapter(classWriter);//拦截器
+        classReader.accept(cv, ClassReader.EXPAND_FRAMES);
+        boolean isWrite = cv.isInterceptorConfig();// 拦截器
+        byte car[] = classWriter.toByteArray();
+        if (isWrite || isbuildAll) {
+            if (!("".equals(basePath) || basePath == null)) {
+                writeToClass(classWriter, basePath + className + ".class");
+            }
+        }
+        return car;
     }
 
-    public static byte[] classScanner(String className, MyAspect myAspect, String basePath) throws IOException {
-        return classScanner(className, myAspect, basePath, false);
+    //控制器通知扫描
+    public static byte[] conAdviceScanner(InputStream in, BaseAspect baseAspect, String basePath, boolean isbuildAll, String className) throws IOException {
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        ClassReader classReader = new ClassReader(in);//分析类
+//TODO:拦截器的增强
+        ConAdviceAdapter cv = new ConAdviceAdapter(classWriter);//控制器通知
+        classReader.accept(cv, ClassReader.EXPAND_FRAMES);
+        boolean isWrite = cv.isControllerAdvice();//控制器通知
+        byte car[] = classWriter.toByteArray();
+        if (isWrite || isbuildAll) {
+            if (!("".equals(basePath) || basePath == null)) {
+                writeToClass(classWriter, basePath + className + ".class");
+            }
+        }
+        return car;
     }
 
-    public static byte[] classScanner(String className, MyAspect myAspect) throws IOException {
-        return classScanner(className, myAspect, null, false);
-    }
 
     /**
      * 将类写到磁盘上(工具方法)
@@ -209,9 +250,9 @@ public class ControllerScanner {
     @Deprecated
     public static void getInfo(Collection<Class<?>> c, boolean isParallel) {
         if (isParallel) {
-            c.stream().parallel().forEach(ControllerScanner::getInfo);  //如果使用并行处理
+            c.stream().parallel().forEach(ClassScanner::getInfo);  //如果使用并行处理
         } else {
-            c.forEach(ControllerScanner::getInfo);
+            c.forEach(ClassScanner::getInfo);
         }
     }
 

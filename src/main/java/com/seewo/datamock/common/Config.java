@@ -30,6 +30,7 @@ public class Config {
     };//配置对应的注解对应的类描述符
     private static boolean isAllScan = true;
     public static List<String> EPackageBaseName = new ArrayList<>();//不扫描的包名
+    public static String enhanceType = "controller";//增强的类型
     //==========================平台配置
     public static String username; //用户名
     public static String password;//密码
@@ -72,10 +73,14 @@ public class Config {
         }
         EPackageBaseName = Arrays.stream(resourceBundle.getString("EPackageBaseName").replace(".", "/").split(";"))
                 .collect(Collectors.toList());
-
+        String type = resourceBundle.getString("enhanceType").trim();
+        if (!(type.equals(";") || type.equals(""))) {
+            enhanceType = type.split(";")[0].trim();
+        }
     }
 
     //植入配置
+
     public static void weavingConf() {
         weavingPackageName = resourceBundle.getString("weavingPackageName").replace(".", "/").split(";")[0].trim() + "/";
         weavingInterceptorName = resourceBundle.getString("weavingInterceptorName").split(";")[0].trim();

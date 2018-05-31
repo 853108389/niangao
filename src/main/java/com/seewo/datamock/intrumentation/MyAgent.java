@@ -1,7 +1,7 @@
 package com.seewo.datamock.intrumentation;
 
 import com.seewo.datamock.common.Config;
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
 import com.seewo.datamock.common.aspect.MyAspectFactory;
 import com.seewo.datamock.http.utils.MyHttpUtils;
 
@@ -27,11 +27,9 @@ public class MyAgent {
         MyHttpUtils.getHttpClient();//初始化数据
         System.out.println("userInfo: " + Config.username + "__" + Config.password);
         System.out.println("project: " + Config.projectName + "  cat: " + Config.catName + "  col:  " + Config.colName);
-        String level = "0";//默认打印等级
 //        setArgs(agentArgs);
         //TODO:这里可以做外部参数配置
-        MyAspect aspect = getAspect(level);
-        inst.addTransformer(getControllerTransformer(aspect));//加载类   参数为true报错
+        inst.addTransformer(getTransformer());//加载类   参数为true报错
     }
 
     //外部参数配置
@@ -44,22 +42,11 @@ public class MyAgent {
         });
     }
 
-    //选择切面
-    private static MyAspect getAspect(String level) {
-        MyAspect aspect = null;
-        switch (level) {
-            case "0":
-                System.out.println("aspect: " + "ControllerAspect");
-                aspect = MyAspectFactory.getAspect("ControllerAspect");
-                break;
-        }
-        return aspect;
-    }
-
-    //选择转换器
-    private static ClassFileTransformer getControllerTransformer(MyAspect aspect) {
-        System.out.println("ClassFileTransformer: " + "ControllerTransformer");
-        return new ControllerTransformer(aspect);
+    //选择转换器及切面
+    private static ClassFileTransformer getTransformer() {
+        BaseAspect aspect = MyAspectFactory.getAspect("ControllerAspect");
+        System.out.println("ClassFileTransformer: " + "ClassTransformer");
+        return new ClassTransformer(aspect);
     }
 
 }

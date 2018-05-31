@@ -1,4 +1,4 @@
-package com.seewo.datamock.test2;
+package com.seewo.datamock.test3;
 
 import com.seewo.datamock.common.weaving.beans.AnnEntity;
 import com.seewo.datamock.common.weaving.beans.AnnEntry;
@@ -21,8 +21,8 @@ public class MyController {
     @RequestMapping("/showView")
     public ModelAndView showView(@RequestParam Model model, @PathVariable String a, String b, String c, Integer d) {
         ModelAndView modelAndView = new ModelAndView();
-//        WeavingUtils.printAnnInfo(annEntities);
-//        WeavingUtils.printAnnInfo();
+//        ControllerWeavingUtils.printAnnInfo(annEntities);
+//        ControllerWeavingUtils.printAnnInfo();
 //        String a = "aaa";
 //        modelAndView.setViewName("viewName");
 //        modelAndView.addObject(" 需要放到 model 中的属性名称 ", " 对应的属性值，它是一个对象 ");
@@ -34,8 +34,8 @@ public class MyController {
         System.out.println("000000000000000000000000");
         //        LinkedList<AnnEntity> annEntities = creatMock();
 //        LinkedList<AnnEntity> annEntities1 = creatObject(annEntities);
-//        WeavingUtils.printAnnInfo(annEntities1);
-//        WeavingUtils.printAnnInfo(annEntities);
+//        ControllerWeavingUtils.printAnnInfo(annEntities1);
+//        ControllerWeavingUtils.printAnnInfo(annEntities);
         return "method";
     }
 
@@ -67,7 +67,7 @@ public class MyController {
             }
             AnnEntity entity = new AnnEntity(annEntity.getAnnDesc(), l1);
             retlist.add(entity);
-            WeavingUtils.printAnnInfo(retlist);
+            ControllerWeavingUtils.printAnnInfo(retlist);
         }
         return retlist;
     }*/

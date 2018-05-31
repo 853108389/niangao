@@ -1,7 +1,7 @@
 package com.seewo.datamock.common.myAdapter;
 
 import com.seewo.datamock.common.Config;
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
 import jdk.internal.org.objectweb.asm.MethodVisitor;
 import jdk.internal.org.objectweb.asm.Opcodes;
 import jdk.internal.org.objectweb.asm.commons.AdviceAdapter;
@@ -9,11 +9,11 @@ import jdk.internal.org.objectweb.asm.commons.AdviceAdapter;
 /**
  * @Author NianGao
  * @Date 2018/5/24.
- * @description
+ * @description 拦截器方法增强
  */
 public class InterceptorMethodAdapter extends AdviceAdapter {
     private String owner;
-    private MyAspect aspect;
+    private BaseAspect aspect;
 
     public InterceptorMethodAdapter(int access, String name, String desc,
                                     MethodVisitor mv, String owner) {
@@ -27,7 +27,7 @@ public class InterceptorMethodAdapter extends AdviceAdapter {
     }
 
     public InterceptorMethodAdapter(int access, String name, String desc, String signature, String[] exceptions,
-                                    MethodVisitor mv, String owner, MyAspect aspect) {
+                                    MethodVisitor mv, String owner, BaseAspect aspect) {
         super(Opcodes.ASM5, mv, access, name, desc);
         this.owner = owner;
         this.aspect = aspect;

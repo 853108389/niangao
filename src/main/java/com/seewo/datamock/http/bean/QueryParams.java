@@ -18,4 +18,9 @@ public class QueryParams {
     private String desc = "";
     private String required = "1"; //0代表不是必须  1代表是必须的
     private String value;
+
+    public QueryParams(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 }

@@ -1,7 +1,7 @@
 package com.seewo.datamock.common.myAdapter;
 
 import com.seewo.datamock.common.Config;
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
 import com.seewo.datamock.common.bean.LocalParams;
 import com.seewo.datamock.common.weaving.beans.AnnEntity;
 import jdk.internal.org.objectweb.asm.AnnotationVisitor;
@@ -22,7 +22,7 @@ import java.util.LinkedList;
 public class ControllerMethodAdapter extends AdviceAdapter {
     private String owner;
     private boolean isControllerMethod;
-    private MyAspect aspect;
+    private BaseAspect aspect;
 
     public ControllerMethodAdapter(int access, String name, String desc,
                                    MethodVisitor mv, String owner) {
@@ -30,7 +30,7 @@ public class ControllerMethodAdapter extends AdviceAdapter {
     }
 
     public ControllerMethodAdapter(int access, String name, String desc, String signature, String[] exceptions,
-                                   MethodVisitor mv, String owner, MyAspect aspect) {
+                                   MethodVisitor mv, String owner, BaseAspect aspect) {
         super(Opcodes.ASM5, mv, access, name, desc);
         this.owner = owner;
         this.aspect = aspect;

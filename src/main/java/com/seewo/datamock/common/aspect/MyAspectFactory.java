@@ -3,10 +3,10 @@ package com.seewo.datamock.common.aspect;
 /**
  * @Author NianGao
  * @Date 2018/5/11.
- * @description TODO:根据配置文件来获得对应的aspect对象,如打印级别,然后工厂获得aspect
+ * @description aspect的简单工厂类
  */
 public class MyAspectFactory {
-    public static MyAspect getAspect(String aspect) {
+    public static BaseAspect getAspect(String aspect) {
         if (aspect == null) {
             return null;
         }

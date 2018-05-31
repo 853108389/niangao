@@ -5,28 +5,28 @@ import com.seewo.datamock.common.bean.LocalParams;
 import com.seewo.datamock.common.weaving.beans.AnnEntity;
 import com.seewo.datamock.common.weaving.beans.AnnEntry;
 import com.seewo.datamock.common.weaving.beans.EnumEntry;
-import com.seewo.datamock.common.weaving.utils.WeavingUtils;
+import com.seewo.datamock.common.weaving.utils.ControllerWeavingUtils;
 import jdk.internal.org.objectweb.asm.Type;
 
 import java.util.*;
 
 /**
  * @Author NianGao
- * @Date 2018/5/8. 打印方法参数及注解信息
+ * @Date 2018/5/8. 方法前与方法后的切面,执行业务逻辑
  * @description
  */
 @SuppressWarnings("all")
-public class ControllerAspect extends MyAspect {
+public class ControllerAspect extends BaseAspect {
 
     private ControllerAspect() {
 
     }
 
     private static class InnerClass {
-        private static MyAspect m = new ControllerAspect();
+        private static BaseAspect m = new ControllerAspect();
     }
 
-    public static MyAspect getInstance() {
+    public static BaseAspect getInstance() {
         return InnerClass.m;
     }
 
@@ -107,7 +107,7 @@ public class ControllerAspect extends MyAspect {
                 mv.visitInsn(DUP);//复制一份数组,并将复制值压入栈顶
             }
         }
-        mv.visitMethodInsn(INVOKESTATIC, Config.weavingPackageName + "utils/WeavingUtils", "printParams", "([Ljava/lang/Object;)V", false);//调用方法
+        mv.visitMethodInsn(INVOKESTATIC, Config.weavingPackageName + "utils/ControllerWeavingUtils", "printParams", "([Ljava/lang/Object;)V", false);//调用方法
     }
 
     //打印注解参数
@@ -178,7 +178,7 @@ public class ControllerAspect extends MyAspect {
             mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
             mv.visitInsn(POP);
             mv.visitVarInsn(ALOAD, pos1);
-            mv.visitMethodInsn(INVOKESTATIC, Config.weavingPackageName + "utils/WeavingUtils", "printAnnInfo", "(Ljava/util/LinkedList;)V", false);
+            mv.visitMethodInsn(INVOKESTATIC, Config.weavingPackageName + "utils/ControllerWeavingUtils", "printAnnInfo", "(Ljava/util/LinkedList;)V", false);
         }
     }
 
@@ -268,7 +268,7 @@ public class ControllerAspect extends MyAspect {
         mv.visitInsn(DUP);
         mv.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V", false);
         mv.visitVarInsn(ASTORE, pos);
-        List<String> method = WeavingUtils.getMethod(info.getAnnList());
+        List<String> method = ControllerWeavingUtils.getMethod(info.getAnnList());
         method.forEach(a -> {
             mv.visitVarInsn(ALOAD, pos);
             mv.visitLdcInsn(a);
@@ -419,7 +419,7 @@ public class ControllerAspect extends MyAspect {
      */
     public String getMethodDesc() {
         String arr[] = {""};
-        Arrays.stream(WeavingUtils.class.getMethods()).forEach(a -> {
+        Arrays.stream(ControllerWeavingUtils.class.getMethods()).forEach(a -> {
             if (a.getName().equals("doMock")) {
                 arr[0] = Type.getMethodDescriptor(a);
             }
@@ -432,7 +432,7 @@ public class ControllerAspect extends MyAspect {
      */
     public void weaving() {
         System.out.println(getMethodDesc());
-        Type.getType(WeavingUtils.class).getMethodType("doMock");
+        Type.getType(ControllerWeavingUtils.class).getMethodType("doMock");
         //将所有参数压入栈中
         getInsertPosList().stream().forEach(index -> {
             if (index == -1) {
@@ -441,7 +441,7 @@ public class ControllerAspect extends MyAspect {
                 mv.visitVarInsn(ALOAD, index);
             }
         });
-        mv.visitMethodInsn(INVOKESTATIC, Config.weavingPackageName + "utils/WeavingUtils", "doMock", getMethodDesc(), false);
+        mv.visitMethodInsn(INVOKESTATIC, Config.weavingPackageName + "utils/ControllerWeavingUtils", "doMock", getMethodDesc(), false);
     }
     //==================================================================================================================
 

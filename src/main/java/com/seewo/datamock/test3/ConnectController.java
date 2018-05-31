@@ -1,4 +1,4 @@
-package com.seewo.datamock.test2;
+package com.seewo.datamock.test3;
 
 import org.springframework.web.bind.annotation.*;
 

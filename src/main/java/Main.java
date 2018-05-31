@@ -1,8 +1,8 @@
 import com.seewo.datamock.common.Config;
 import com.seewo.datamock.common.aspect.ControllerAspect;
-import com.seewo.datamock.common.utils.ControllerScanner;
+import com.seewo.datamock.common.utils.ClassScanner;
 import com.seewo.datamock.http.utils.MyHttpUtils;
-import com.seewo.datamock.test2.MyTrace;
+import com.seewo.datamock.test.MyTrace;
 import jdk.internal.org.objectweb.asm.*;
 
 /**
@@ -20,16 +20,15 @@ public class Main implements Opcodes {
             e.printStackTrace();
         }*/
         Config.init();
-        System.out.println(Config.weavingInterceptorClassName);
-        System.out.println(Config.weavingInterceptorName);
-        System.out.println(Config.weavingInterceptorPathPatterns);
+//        System.out.println(Config.weavingInterceptorClassName);
+//        System.out.println(Config.weavingInterceptorName);
+//        System.out.println(Config.weavingInterceptorPathPatterns);
 //        testHttpUtils();
 //        testAgent();//测试代理 TODO:重复添加问题,可能需要一个标志标量
-//        testAsm();//测试asm
+        testAsm();//测试asm
+        testTrace();//测试trace
 //        Int2 int2 = new Int2();
 //        int2.addInterceptors(null);
-//        testTrace();//测试trace
-//        testAsm();
 //        dump1();
 //        System.out.println(Type.getType(MyTrace.MyTraceInnerClass.class).getInternalName());
 //        dump();
@@ -76,7 +75,7 @@ public class Main implements Opcodes {
             mv.visitEnd();
         }
         cw.visitEnd();
-        ControllerScanner.writeToClass(cw, "D://test/testoooooo.class");
+        ClassScanner.writeToClass(cw, "D://test/testoooooo.class");
         return cw.toByteArray();
     }
 
@@ -122,7 +121,7 @@ public class Main implements Opcodes {
             mv.visitEnd();
         }
         cw.visitEnd();
-        ControllerScanner.writeToClass(cw, "D://test/tesiiiiinner.class");
+        ClassScanner.writeToClass(cw, "D://test/tesiiiiinner.class");
         return cw.toByteArray();
     }
 
@@ -169,14 +168,14 @@ public class Main implements Opcodes {
 
     //生成traceInfo
     public static void testTrace() {
-//        ControllerScanner.getTraceInfo(MyTrace.MyTraceInnerClass.class);
-        ControllerScanner.getTraceInfo(MyTrace.class);
+//        ClassScanner.getTraceInfo(MyTrace.MyTraceInnerClass.class);
+        ClassScanner.getTraceInfo(MyTrace.class);
         System.out.println("Trace完成");
     }
 
     //测试字节码增强
     public static void testAsm() {
-        ControllerScanner.genEnhanceClasses(Config.mainBaseScanPack, ControllerAspect.getInstance(), Config.mainGenClassPos);
+        ClassScanner.genEnhanceClasses(Config.mainBaseScanPack, ControllerAspect.getInstance(), Config.mainGenClassPos);
     }
 
     @SuppressWarnings("all")

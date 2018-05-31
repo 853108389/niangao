@@ -1,8 +1,8 @@
 package com.seewo.datamock.intrumentation;
 
 import com.seewo.datamock.common.Config;
-import com.seewo.datamock.common.aspect.MyAspect;
-import com.seewo.datamock.common.utils.ControllerScanner;
+import com.seewo.datamock.common.aspect.BaseAspect;
+import com.seewo.datamock.common.utils.ClassScanner;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -15,12 +15,12 @@ import java.security.ProtectionDomain;
  * @Date 2018/5/8.
  * @Des 代理启动, 用于加载类
  */
-public class ControllerTransformer implements ClassFileTransformer {
-    private MyAspect myAspect;
+public class ClassTransformer implements ClassFileTransformer {
+    private BaseAspect baseAspect;
     private boolean flag = true;
 
-    public ControllerTransformer(MyAspect myAspect) {
-        this.myAspect = myAspect;
+    public ClassTransformer(BaseAspect baseAspect) {
+        this.baseAspect = baseAspect;
     }
 
     /**
@@ -35,11 +35,10 @@ public class ControllerTransformer implements ClassFileTransformer {
     @Override
     @SuppressWarnings("all")
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-//            TODO: 对interceptor进行增强
         try {
             if (Config.isScan(className)) {
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(classfileBuffer);
-                byte[] bytes = ControllerScanner.classScanner(byteArrayInputStream, myAspect, Config.agentGenClassPos, className);
+                byte[] bytes = ClassScanner.classScanner(byteArrayInputStream, baseAspect, Config.agentGenClassPos, className);
                 System.out.println();
                 return bytes;
             }

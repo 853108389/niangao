@@ -1,6 +1,6 @@
 package com.seewo.datamock.common.myAdapter;
 
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
 import com.seewo.datamock.common.weaving.beans.AnnEntry;
 import com.seewo.datamock.common.weaving.beans.EnumEntry;
 import jdk.internal.org.objectweb.asm.AnnotationVisitor;
@@ -13,7 +13,7 @@ import jdk.internal.org.objectweb.asm.Opcodes;
  * 2.因为注解访问器会嵌套返回,所以全局变量要小心,不能保证每个注解访问器都一样
  */
 public class ControllerMethodAnoAdapter extends AnnotationVisitor {
-    private static MyAspect aspect = null;//增强切面
+    private static BaseAspect aspect = null;//增强切面
     private AnnEntry annEntry = null;//注解实体
     private boolean flag = false;//因为ControllerAnoAdapter会进行嵌套扫描,false代表一个键值对扫描完毕
 
@@ -23,7 +23,7 @@ public class ControllerMethodAnoAdapter extends AnnotationVisitor {
      * @param annotationVisitor
      * @param aspect
      */
-    public ControllerMethodAnoAdapter(AnnotationVisitor annotationVisitor, MyAspect aspect) {
+    public ControllerMethodAnoAdapter(AnnotationVisitor annotationVisitor, BaseAspect aspect) {
         super(Opcodes.ASM5, annotationVisitor);
         this.aspect = aspect;
         this.flag = true;//所以在最外层的时候设置flag,代表本次注解全部扫描完毕

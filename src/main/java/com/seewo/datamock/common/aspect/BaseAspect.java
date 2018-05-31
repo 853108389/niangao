@@ -10,14 +10,14 @@ import jdk.internal.org.objectweb.asm.commons.LocalVariablesSorter;
  * @Date 2018/5/8.
  * @description 方法增强的切面类
  */
-public abstract class MyAspect implements Opcodes {
+public abstract class BaseAspect implements Opcodes {
     protected int index;//返回值的局部变量位置
 
     protected LocalVariablesSorter mv = null;
 
     protected Info info = new Info();
 
-    protected MyAspect() {
+    protected BaseAspect() {
     }
 
 

@@ -9,7 +9,7 @@ import java.util.Enumeration;
 /**
  * @Author NianGao
  * @Date 2018/5/24.
- * @description
+ * @description 将此类编译后的Class文件放在/resources下 再启用拦截器增强即可
  */
 public class UploadInterceptor extends HandlerInterceptorAdapter {
     @Override

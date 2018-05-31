@@ -1,7 +1,7 @@
-package com.seewo.datamock.test;
+package com.seewo.datamock.test2;
 
 import com.seewo.datamock.common.weaving.interceptor.UploadInterceptor;
-import com.seewo.datamock.test2.TokenHandlerInterceptorAdapter;
+import com.seewo.datamock.test3.TokenHandlerInterceptorAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;

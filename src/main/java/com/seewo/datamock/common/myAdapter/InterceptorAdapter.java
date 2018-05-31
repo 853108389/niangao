@@ -1,7 +1,7 @@
 package com.seewo.datamock.common.myAdapter;
 
 import com.seewo.datamock.common.Config;
-import com.seewo.datamock.common.aspect.MyAspect;
+import com.seewo.datamock.common.aspect.BaseAspect;
 import jdk.internal.org.objectweb.asm.*;
 
 /**
@@ -19,7 +19,7 @@ public class InterceptorAdapter extends ClassVisitor implements Opcodes {
         super(Opcodes.ASM5, cv);
     }
 
-    public InterceptorAdapter(ClassVisitor cv, MyAspect myAspect) {
+    public InterceptorAdapter(ClassVisitor cv, BaseAspect baseAspect) {
         super(Opcodes.ASM5, cv);
     }
 
