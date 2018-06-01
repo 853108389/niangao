@@ -100,13 +100,13 @@ public class Config {
 
     //平台配置
     public static void plantformConf() {
-        username = resourceBundle.getString("username");
-        password = resourceBundle.getString("password");
-        projectName = resourceBundle.getString("projectName");
-        catName = resourceBundle.getString("catName");
-        colName = resourceBundle.getString("colName");
-        groupName = resourceBundle.getString("groupName");
-        String headers = resourceBundle.getString("headers").trim();
+        username = resourceBundle.getString("username").split(";")[0];
+        password = resourceBundle.getString("password").split(";")[0];
+        projectName = resourceBundle.getString("projectName").split(";")[0];
+        catName = resourceBundle.getString("catName").split(";")[0];
+        colName = resourceBundle.getString("colName").split(";")[0];
+        groupName = resourceBundle.getString("groupName").split(";")[0];
+        String headers = resourceBundle.getString("headers").trim().split(";")[0];
         if (!(headers.equals(";") || headers.equals(""))) {
             Arrays.stream(resourceBundle.getString("headers").split("&")).forEach(entry -> {
                 String[] split = entry.split("=");

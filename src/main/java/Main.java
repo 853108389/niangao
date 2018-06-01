@@ -27,6 +27,7 @@ public class Main implements Opcodes {
 //        testAgent();//测试代理 TODO:重复添加问题,可能需要一个标志标量
         testAsm();//测试asm
         testTrace();//测试trace
+        System.out.println("aaaa".split(";")[0]);
 //        Int2 int2 = new Int2();
 //        int2.addInterceptors(null);
 //        dump1();
