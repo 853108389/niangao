@@ -397,29 +397,23 @@ public class MyHttpUtils {
     public static JSONObject uploadCase(Edit edit) {
         try {
             AddInterface addInterface = new AddInterface(edit.getCatid(), edit.getId(), edit.getTitle(), edit.getPath(), edit.getMethod());
-//            System.out.println("-=================");
-//            System.out.println(addInterface);
             Optional<String> optional = isInterFaceExsit(addInterface);//判断接口是否存在
             String res = optional.orElseGet(() -> {
                 //如果不存在
                 JSONObject addInterFaceRes = addInterFace(addInterface);
-//                System.out.println(addInterFaceRes);
                 if (addInterFaceRes.containsKey("data")) {
                     String id = addInterFaceRes.getJSONObject("data").getString("_id");//添加接口并获取id
                     edit.setId(id);
                     JSONObject jsonObject = editInterFace(edit);//编辑接口
-//                    System.out.println("edit " + jsonObject);
                     updateInterfaces();//更新接口信息
                     return id;
                 } else {
                     //没有data,代表出了预期之外的错误;
                     System.out.println("error" + addInterFaceRes);
-                    return "";
+                    return null;
                 }
             });//返回接口id;
-//            System.out.println("testCases " + testCases);
             TestCase o = new TestCase(edit);
-//            System.out.println("o " + o);
             if (testCases.contains(o)) {
                 //该测试用例重复
                 System.out.println("重复添加--------------------");

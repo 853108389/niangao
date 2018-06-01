@@ -204,9 +204,7 @@ public class ControllerWeavingUtils {
             while (e.hasMoreElements()) {
                 String headerName = (String) e.nextElement();
                 String headValue = request.getHeader(headerName);
-                HeaderParams headerParams = new HeaderParams();
-                headerParams.setName(headerName);
-                headerParams.setValue(request.getHeader(headerName));
+                HeaderParams headerParams = new HeaderParams(headerName, request.getHeader(headerName));
                 list.add(headerParams);
             }
         } else {
@@ -276,70 +274,6 @@ public class ControllerWeavingUtils {
     }
 
     //==================================================================================================================
-
-//ControllerAdapter方式增强=============================================================================================
-
-//    public static void doMock2(HttpServletRequest request, Object response, MethodParameter methodParameter, MediaType mediaType) {
-//        String contentType = request.getContentType();
-//        Edit edit = null;
-//        String method = request.getMethod();
-//        if (method.equals("GET")) {
-//
-//        } else {
-//            switch (contentType) {
-//                case "application/json":
-//                    edit = new Edit_Post_Json();
-//                    //获取json格式字符串
-//                    break;
-//                case "application/x-www-form-urlencoded":
-//                    //post_form
-//                    edit = new Edit_Post_Form();
-//                    //FormParams
-//                    List<FormParams> formParamslist = new ArrayList<>();
-//                    Optional.ofNullable(request.getParameterMap()).ifPresent(parameterMap -> {
-//                        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-//                            FormParams formParams = new FormParams();
-//                            formParams.setName(entry.getKey());
-//                            formParamslist.add(formParams);
-//                        }
-//                    });
-//                    edit.setReq_body_form(formParamslist);
-//                    break;
-//                case "multipart/form-data":
-//                    edit = new Edit_Post_Json();
-//                    //post_file  TODO:处理文件的情况 @Multipart注解情况适配
-//                    break;
-//                default:
-//                    //TODO:其他的请求头
-//                    System.out.println("ControllerWeavingUtils: 未记录的请求头: " + contentType);
-//                    break;
-//            }
-//        }
-//        //queryParamsList
-//        List<QueryParams> queryParamsList = new ArrayList<>();
-//        Optional.ofNullable(request.getQueryString()).filter(a -> !a.equals("")).ifPresent(a -> {
-//            String[] split = a.split("&");
-//            Arrays.stream(split).forEach(str -> {
-//                String[] split1 = str.split("=");
-//                QueryParams queryParams = new QueryParams(split1[0], split1[1]);
-//                queryParamsList.add(queryParams);
-//            });
-//        });
-//        //headerParamsList
-//        List<HeaderParams> headerParamsList = new ArrayList<>();
-//        Optional.ofNullable(request.getHeaderNames()).ifPresent(e -> {
-//            while (e.hasMoreElements()) {
-//                String headerName = (String) e.nextElement();
-//                HeaderParams headerParams = new HeaderParams(headerName, request.getHeader(headerName));
-//                headerParamsList.add(headerParams);
-//            }
-//        });
-//
-//        System.out.println("MediaType " + mediaType);
-//        System.out.println("MethodParameter" + methodParameter);
-//        System.out.println("请求对象 " + request);
-//        System.out.println("返回值 " + response);//返回值
-//    }
 
     //获取请求体
     @Deprecated

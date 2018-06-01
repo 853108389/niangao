@@ -21,41 +21,6 @@ import java.util.*;
  */
 public class ConAdviceWeavingUtils {
 
-    public static byte[] getRequestPostBytes(HttpServletRequest request)
-            throws IOException {
-        int contentLength = request.getContentLength();
-        if (contentLength < 0) {
-            return null;
-        }
-        byte buffer[] = new byte[contentLength];
-        for (int i = 0; i < contentLength; ) {
-            int readlen = request.getInputStream().read(buffer, i,
-                    contentLength - i);
-            if (readlen == -1) {
-                break;
-            }
-            i += readlen;
-        }
-        return buffer;
-    }
-
-    //获取json格式的请求体
-    public static String getRequestPostStr(HttpServletRequest request) {
-        String res = "";
-        try {
-            byte[] buffer = getRequestPostBytes(request);
-            String charEncoding = request.getCharacterEncoding();
-            if (charEncoding == null) {
-                charEncoding = "UTF-8";
-            }
-            res = new String(buffer, charEncoding);
-        } catch (IOException e) {
-            System.out.println("获取字节数组失败");
-            e.printStackTrace();
-        }
-        return res;
-    }
-
     //初始化edit
     public static Edit getEdit(HttpServletRequest request) {
         Edit edit = null;
@@ -157,4 +122,42 @@ public class ConAdviceWeavingUtils {
 //        System.out.println("请求对象 " + request);
 //        System.out.println("返回值 " + response);//返回值
     }
+
+    @Deprecated
+    public static byte[] getRequestPostBytes(HttpServletRequest request)
+            throws IOException {
+        int contentLength = request.getContentLength();
+        if (contentLength < 0) {
+            return null;
+        }
+        byte buffer[] = new byte[contentLength];
+        for (int i = 0; i < contentLength; ) {
+            int readlen = request.getInputStream().read(buffer, i,
+                    contentLength - i);
+            if (readlen == -1) {
+                break;
+            }
+            i += readlen;
+        }
+        return buffer;
+    }
+
+    //获取json格式的请求体
+    @Deprecated
+    public static String getRequestPostStr(HttpServletRequest request) {
+        String res = "";
+        try {
+            byte[] buffer = getRequestPostBytes(request);
+            String charEncoding = request.getCharacterEncoding();
+            if (charEncoding == null) {
+                charEncoding = "UTF-8";
+            }
+            res = new String(buffer, charEncoding);
+        } catch (IOException e) {
+            System.out.println("获取字节数组失败");
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 }

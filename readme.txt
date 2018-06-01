@@ -5,6 +5,7 @@
                 |-BaseAspect.java 切面的抽象类
                 |-MyAspectFactory.java 切面类工厂
                 |-ControllerAspect.java 核心切面类,用于Controller
+                |-InterceptorAspect.java 核心切面类，用于Interceptor
             |-bean(实体)
                 |-Info.java 扫描时,封装扫描类的信息
                 |-LocalParams.java 封装方法参数信息
@@ -14,8 +15,8 @@
                 |-ControllerMethodAdapter.java  方法适配器
                 |-ControllerMethodAnoAdapter.java 方法注解适配器
                 |-ControllerParamsAnoAdapter.java 参数注解适配器
-                |-InterceptorAdapter.java TODO:拦截器适配器
-                |-InterceptorMethodAdapter.java TODO:拦截器方法适配器
+                |-InterceptorAdapter.java
+                |-InterceptorMethodAdapter.java
             |-utils(工具)
                 |-ClassTools.java 用于扫描指定包里的类(开发时使用,代理情况下,扫描每个类无需我们关心)
                 |-ControllerScanner 对类进行扫描并进行字节码增强的入口Api
@@ -25,7 +26,7 @@
                     |-AnnEntry.java   如 value = "testMethod2" 或 method = {RequestMethod.GET, RequestMethod.DELETE}
                     |-EnumEntry.java  如 RequestMethod.GET和 RequestMethod.DELETE    用于封装注解信息.
                 |-interceptor(拦截器)
-                    |-UploadInterceptor.java TODO:植入的拦截器类
+                    |-UploadInterceptor.java
                 |-utils(工具类)
                     |-ControllerWeavingUtils.java 被植入的方法,以及从从被构造上传参数到上传之间的全过程
             |-Config.java 读取配置文件,并加载其中参数到配置中.
@@ -77,21 +78,23 @@
       格式如 java -javaagent:D:\workplace\test\out\artifacts\seewo_datamock\seewo-datamock.jar=Hello -jar D:\seewo-roomcenter.jar
       java -javaagent:${此jar包的全路径}=${自定义参数} -jar ${被代理启动jar的全路径}
 三丶注:
-    1.项目中的jar包和打包成jar后引用的jar是不同的.即
+    1.一定注意：
         开发时引用的jar
         打包后引用的jar
-        不一样
-    2.不能直接将拦截器通过asm植入到代理jar内.正确的方法是将自定义拦截器编译后,将.class文件拷贝到resources目录下
-    3.所以,自定义的,与spring产生依赖的类,都要小心处理,不能在本jar中处理任何与spring相关的类
-    4.效果: ControllerAdvice > Interceptor > controller
-    5.不要随便改类名
-    6.配置文件为空时可以写';' 不要擅自删除某一项
-    7.一些细节在代码中标明
-四丶一些未解决的问题或者坑
-    1.interceptor的request的流只能获取一次的问题
-    2.interceptor拿不到@requestBody的返回值
-    3.ResponseBodyAdvice的接口的request的流是已经关闭的,暂时没发现可以获取到请求体的方法
-    4.controller方式增强,如果存在着被拦截器拦截的请求,是不会被录入的
-    5.ControllerAdvice并没有考虑到以下问题:
+        和被代理的目标jar
+        classpath不一样
+    2.所以,自定义的,与spring产生依赖的类,都要小心处理,不能在本jar中处理任何与spring相关的类
+    3.不能直接将拦截器通过asm植入到代理jar内.正确的方法是将自定义拦截器编译后,将.class文件拷贝到resources目录下
+    4.不要随便改类名
+    5.配置文件为空时可以写';' 不要擅自删除某一项
+    6.一些细节在代码中以注释标明
+四丶一些未解决的问题或者坑或者莫名其妙的问题
+    1.interceptor
+       1.1 interceptor的request的流只能获取一次的问题
+       1.2 interceptor拿不到@requestBody的返回值
+    2.controller
+       2.1 controller方式增强,如果存在着被拦截器拦截的请求,是不会被录入的
+    3.controllerAdvice并没有考虑到以下问题:
        5.1.多个ControllerAdvice
        5.2.存在着已经实现过ResponseBodyAdvice的接口,这个时候需要写methodAdapter,把新增方法改为修改方法
+       5.3 ResponseBodyAdvice的接口的request的流是已经关闭的,暂时没发现可以获取到请求体的方法
