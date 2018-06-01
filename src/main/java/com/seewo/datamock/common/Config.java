@@ -106,8 +106,9 @@ public class Config {
         catName = resourceBundle.getString("catName").split(";")[0];
         colName = resourceBundle.getString("colName").split(";")[0];
         groupName = resourceBundle.getString("groupName").split(";")[0];
-        String headers = resourceBundle.getString("headers").trim().split(";")[0];
+        String headers = resourceBundle.getString("headers");
         if (!(headers.equals(";") || headers.equals(""))) {
+            headers = headers.split(";")[0];
             Arrays.stream(resourceBundle.getString("headers").split("&")).forEach(entry -> {
                 String[] split = entry.split("=");
                 defaultHeaders.put(split[0], split[1]);
