@@ -56,8 +56,8 @@
       <file leaf-file-name="Config.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/Config.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="108" column="82" lean-forward="true" selection-start-line="102" selection-start-column="7" selection-end-line="108" selection-end-column="82" />
+            <state relative-caret-position="772">
+              <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
               <folding>
                 <element signature="method#scanConf#0;class#Config#0" expanded="false" />
                 <element signature="method#weavingConf#0;class#Config#0" expanded="false" />
@@ -1054,7 +1054,7 @@
       <workItem from="1527468311565" duration="22056000" />
       <workItem from="1527505413419" duration="2650000" />
       <workItem from="1527555240126" duration="58562000" />
-      <workItem from="1527752609382" duration="19775000" />
+      <workItem from="1527752609382" duration="20010000" />
     </task>
     <task id="LOCAL-00001" summary="字节码增强controller,从而将信息上传到测试平台&#10;TODO:增强interceptor">
       <created>1527492428998</created>
@@ -1116,7 +1116,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="495018000" />
+    <option name="totallyTimeSpent" value="495253000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1760,8 +1760,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/seewo/datamock/common/Config.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="108" column="82" lean-forward="true" selection-start-line="102" selection-start-column="7" selection-end-line="108" selection-end-column="82" />
+        <state relative-caret-position="772">
+          <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
           <folding>
             <element signature="method#scanConf#0;class#Config#0" expanded="false" />
             <element signature="method#weavingConf#0;class#Config#0" expanded="false" />
