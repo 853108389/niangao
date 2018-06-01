@@ -1,9 +1,8 @@
-import com.niangao.common.Config;
-import com.niangao.common.aspect.ControllerAspect;
-import com.niangao.common.utils.ControllerScanner;
-import com.niangao.http.utils.MyHttpUtils;
-import com.niangao.test2.MyTrace;
-import jdk.internal.org.objectweb.asm.*;
+import com.seewo.datamock.common.Config;
+import com.seewo.datamock.common.utils.ClassScanner;
+import com.seewo.datamock.http.utils.MyHttpUtils;
+import com.seewo.datamock.test.MyTrace;
+import jdk.internal.org.objectweb.asm.Opcodes;
 
 /**
  * @Author NianGao
@@ -13,57 +12,32 @@ import jdk.internal.org.objectweb.asm.*;
 public class Main implements Opcodes {
 
     public static void main(String[] args) {
+      /*  try {
+            Method getTest = InterceptorConfig.class.getDeclaredMethod("getTest", null);
+            System.out.println(Type.getMethodDescriptor(getTest));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
         Config.init();
-        testHttpUtils();
+        MyHttpUtils.getHttpClient();//初始化数据
+//        System.out.println(Config.weavingInterceptorClassName);
+//        System.out.println(Config.weavingInterceptorName);
+//        System.out.println(Config.weavingInterceptorPathPatterns);
+//        testHttpUtils();
 //        testAgent();//测试代理 TODO:重复添加问题,可能需要一个标志标量
-//        testAsm();//测试asm
-//        testTrace();//测试trace
+        testAsm();//测试asm
+        testTrace();//测试trace
+        System.out.println("aaaa".split(";")[0]);
+//        Int2 int2 = new Int2();
+//        int2.addInterceptors(null);
+//        dump1();
+//        System.out.println(Type.getType(MyTrace.MyTraceInnerClass.class).getInternalName());
 //        dump();
 //        testUtils();
 //        testGetInfo();
     }
 
     //匿名
-    public static byte[] dump1() {
-
-        ClassWriter cw = new ClassWriter(0);
-        FieldVisitor fv;
-        MethodVisitor mv;
-        AnnotationVisitor av0;
-
-//        cw.visit(52, ACC_SUPER, "D://test/InterceptorConfig$1.class", null, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", null);
-//        cw.visitOuterClass();
-        //=============
-        cw.visit(52, ACC_PUBLIC + ACC_SUPER, "com/niangao/test/InterceptorConfig", null, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", null);
-
-        cw.visitSource("InterceptorConfig.java", null);
-        {
-            av0 = cw.visitAnnotation("Lorg/springframework/context/annotation/Configuration;", true);
-            av0.visitEnd();
-        }
-        cw.visitInnerClass("com/niangao/test/InterceptorConfig$1.class", "com/niangao/test/InterceptorConfig", null, 0);
-        {
-            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
-            mv.visitCode();
-            Label l0 = new Label();
-            mv.visitLabel(l0);
-            mv.visitLineNumber(21, l0);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/springframework/web/servlet/config/annotation/WebMvcConfigurerAdapter", "<init>", "()V", false);
-            Label l1 = new Label();
-            mv.visitLabel(l1);
-            mv.visitLineNumber(22, l1);
-            mv.visitInsn(RETURN);
-            Label l2 = new Label();
-            mv.visitLabel(l2);
-            mv.visitLocalVariable("this", "Lcom/niangao/test/InterceptorConfig;", null, l0, l2, 0);
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-        }
-        cw.visitEnd();
-        ControllerScanner.writeToClass(cw, "D://test/testtt.class");
-        return cw.toByteArray();
-    }
 
     //测试http请求
     public static void testHttpUtils() {
@@ -108,13 +82,13 @@ public class Main implements Opcodes {
 
     //生成traceInfo
     public static void testTrace() {
-        ControllerScanner.getTraceInfo(MyTrace.class);
+        ClassScanner.getTraceInfo(MyTrace.class);
         System.out.println("Trace完成");
     }
 
     //测试字节码增强
     public static void testAsm() {
-        ControllerScanner.genEnhanceClasses(Config.mainBaseScanPack, ControllerAspect.getInstance(), Config.mainGenClassPos);
+        ClassScanner.genEnhanceClasses(Config.mainBaseScanPack, Config.mainGenClassPos);
     }
 
 
